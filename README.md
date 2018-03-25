@@ -7,3 +7,9 @@
 - Click OK to accept changes
 - Right-click on a Project name
 - Select Build or Clean and Build
+
+# Spustenie
+ - otvor CMD
+ - chod do \strategicka-hra\dist
+ - skopiruj donho map.txt
+ - spusti java -jar nazov_buildu.jar
