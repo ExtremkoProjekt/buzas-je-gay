@@ -72,8 +72,11 @@ public class Main {
     }
     
     public static void createPlayground() throws IOException {
+        String path = "map.txt";
+    
         playground = new Playground();
-        //playground.printMap();
+        playground.loadMap(path);
+        playground.printMap();
     }
     
     public static void clear() throws IOException, InterruptedException {

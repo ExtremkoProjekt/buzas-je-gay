@@ -11,29 +11,37 @@ import java.util.ArrayList;
  * @author MATEJ BUZAS
  */
 public class Playground {
-    ArrayList<Town> towns;
+    public ArrayList<Town> towns;
     
     public Playground() throws IOException {
         towns = new ArrayList<Town>();
-        loadMap();
     }
     
-    private void loadMap() throws FileNotFoundException, IOException {
-       try (BufferedReader br = new BufferedReader(new FileReader("map.txt"))) {
-                        //first line of text file contains all towns
-			String line = br.readLine();
-                        for (String s: line.split(" ")) {
-                            towns.add(new Town(s));
-                        }                         
-                        //other lines in text file contains couples of neighbours
-			while ((line = br.readLine()) != null) {
-				String[] pair = line.split(" ");
-                                getTownByName(pair[0]).addNeighbour(getTownByName(pair[1]));
-                                getTownByName(pair[1]).addNeighbour(getTownByName(pair[0]));                                                       
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    public void loadMap(String path) throws FileNotFoundException, IOException {
+       try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            //first line of text file contains all towns
+            String line = br.readLine();
+            this.parseTowns(line);                      
+            //other lines in text file contains couples of neighbours
+            this.parseNeighbours(br);
+        } catch (IOException e) {
+                e.printStackTrace();
+        }
+    }
+    
+    public void parseTowns(String input){
+        for (String s: input.split(" ")) {
+            towns.add(new Town(s));
+        }   
+    }
+    
+    public void parseNeighbours(BufferedReader br) throws IOException{
+        String line;
+        while ((line = br.readLine()) != null) {
+                String[] pair = line.split(" ");
+                getTownByName(pair[0]).addNeighbour(getTownByName(pair[1]));
+                getTownByName(pair[1]).addNeighbour(getTownByName(pair[0]));                                                       
+        }
     }
     
     private Town getTownByName(String name) {
