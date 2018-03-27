@@ -1,5 +1,6 @@
 package extremko;
 
+import database.DatabaseHandleTables;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,13 +19,13 @@ public class Main {
     
     
     //java -jar nazov.jar
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
+        DatabaseHandleTables.dropTables();
+        DatabaseHandleTables.createTables();
         reader = new Scanner(System.in); 
         createPlayground();
-        play();
-        
-        
-        
+        UserRepository.add("Janko", "map2.txt");
+        //play();                     
     }
     
     public static void play() throws IOException, InterruptedException {  
@@ -33,8 +34,7 @@ public class Main {
         
        
     }
-    
-    
+     
     public static void login() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
         clear();
         System.out.println("Vitajte v hre!");
@@ -92,7 +92,7 @@ public class Main {
         int n = reader.nextInt();
         
         if (n == 1) {
-            town ();
+            town();
         }
         else if (n == 2) {
             neighbours();
