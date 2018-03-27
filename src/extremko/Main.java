@@ -1,5 +1,6 @@
 package extremko;
 
+import database.BootstrapDB;
 import database.DatabaseHandleTables;
 import java.io.BufferedReader;
 import java.io.IOException;

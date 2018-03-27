@@ -1,9 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package database;
+
+import java.sql.SQLException;
+import repositories.BuildingRepository;
 
 /**
  *
@@ -11,8 +10,12 @@ package database;
  */
 public class BootstrapDB {
     
-    public void fillBuildings() {
-        
+    public static void fillBuildings() throws SQLException, ClassNotFoundException {
+        if (BuildingRepository.buildingCount() == 0) {
+            BuildingRepository.add("Kasarne");
+            BuildingRepository.add("Zlata bana");
+            
+        }
     }
     
 }
