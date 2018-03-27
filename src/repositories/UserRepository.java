@@ -1,5 +1,6 @@
 package repositories;
 
+import database.DatabaseConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +12,7 @@ import java.sql.SQLException;
  */
 public class UserRepository {
     //adds user to database
-     public static void addUser(String name) throws ClassNotFoundException, SQLException {
+     public static void add(String name) throws ClassNotFoundException, SQLException {
         Connection c = DatabaseConnection.getConnection();
         c.setAutoCommit(false);
         String sql = "INSERT INTO USER (USER_ID) VALUES (?);"; 
@@ -25,7 +26,7 @@ public class UserRepository {
     }
     
      //returns true if user with name in parameter exists
-    public static boolean userExists(String name) throws ClassNotFoundException, SQLException {
+    public static boolean exists(String name) throws ClassNotFoundException, SQLException {
         Connection c = DatabaseConnection.getConnection();
         PreparedStatement pstmt;
         String sql = "SELECT * FROM USER WHERE NAME = ?;";
@@ -34,5 +35,4 @@ public class UserRepository {
         ResultSet rs = pstmt.executeQuery();
         return rs.next();  
     }
-    
 }
