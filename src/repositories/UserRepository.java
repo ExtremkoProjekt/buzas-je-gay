@@ -21,7 +21,6 @@ public class UserRepository {
         pstmt.setString(1, name);
         pstmt.setString(2, textfile);
         pstmt.executeUpdate();
-        
         pstmt.close();
         c.commit();
         c.setAutoCommit(true);
