@@ -11,14 +11,14 @@ import java.sql.SQLException;
  */
 public class TownRepository {
     //adds town to database
-     public static void add(String name) throws ClassNotFoundException, SQLException {
+     public static void add(String name, int userID) throws ClassNotFoundException, SQLException {
         Connection c = DatabaseConnection.getConnection();
         c.setAutoCommit(false);
-        String sql = "INSERT INTO USER (NAME, TEXTFILE) VALUES (?);"; 
+        String sql = "INSERT INTO TOWNS (NAME, USER_ID) VALUES (?, ?);"; 
         PreparedStatement pstmt;
         pstmt = c.prepareStatement(sql);
         pstmt.setString(1, name);
-        
+        pstmt.setInt(2, userID);
         pstmt.executeUpdate();
         pstmt.close();
         c.commit();

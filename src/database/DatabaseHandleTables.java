@@ -26,7 +26,7 @@ public class DatabaseHandleTables {
         sql = "CREATE TABLE IF NOT EXISTS TOWNS " +
                 "(TOWN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "NAME TEXT, "
-                + "GOLD INTEGER, "
+                + "GOLD INTEGER DEFAULT 50, "
                 + "USER_ID, "
                 + "FOREIGN KEY(USER_ID) REFERENCES TOWNS(USER_ID)"
                 + ");";
