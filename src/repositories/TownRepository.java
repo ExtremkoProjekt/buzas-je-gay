@@ -15,7 +15,7 @@ public class TownRepository {
     public static void add(String name, int userID) throws ClassNotFoundException, SQLException {
         Connection c = DatabaseConnection.getConnection();
         c.setAutoCommit(false);
-        String sql = "INSERT INTO TOWNS (NAME, USER_ID) VALUES (?, ?);"; 
+        String sql = "INSERT INTO TOWN (NAME, USER_ID) VALUES (?, ?);"; 
         PreparedStatement pstmt;
         pstmt = c.prepareStatement(sql);
         pstmt.setString(1, name);

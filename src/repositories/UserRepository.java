@@ -12,7 +12,7 @@ import java.sql.Statement;
  * @author MATEJ
  */
 public class UserRepository {
-    //adds user to database
+    //adds user to database and returns user_id from 
      public static int add(String name, String textfile) throws ClassNotFoundException, SQLException {
         Connection c = DatabaseConnection.getConnection();
         c.setAutoCommit(false);
