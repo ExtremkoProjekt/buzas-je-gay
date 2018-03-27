@@ -10,12 +10,17 @@ import repositories.BuildingRepository;
  */
 public class BootstrapDB {
     
-    public static void fillBuildings() throws SQLException, ClassNotFoundException {
+    private static void fillBuildings() throws SQLException, ClassNotFoundException {
         if (BuildingRepository.buildingCount() == 0) {
             BuildingRepository.add("Kasarne");
             BuildingRepository.add("Zlata bana");
             
         }
+    }
+    
+    public static void initDatabase() throws SQLException {
+        fillBuildings();
+        
     }
     
 }

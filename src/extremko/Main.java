@@ -27,7 +27,7 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         //DatabaseHandleTables.dropTables();
         DatabaseHandleTables.createTables();
-        BootstrapDB.fillBuildings();       
+        BootstrapDB.initDatabase();
         reader = new Scanner(System.in); 
         // createPlayground();
         // UserRepository.add("Janko", "map2.txt");
