@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package database;
+package repositories;
+
+import java.sql.Connection;
 
 /**
  *
@@ -12,3 +14,4 @@ package database;
 public class TownRepository {
     
 }
+
