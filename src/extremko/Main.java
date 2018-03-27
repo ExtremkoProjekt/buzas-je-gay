@@ -1,9 +1,12 @@
 package extremko;
 
+import database.DatabaseHandleTables;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.util.Scanner;
+import repositories.UserRepository;
 
 /**
  *
@@ -15,10 +18,13 @@ public class Main {
     
     
     //java -jar nazov.jar
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
+        DatabaseHandleTables.dropTables();
+        DatabaseHandleTables.createTables();
         reader = new Scanner(System.in); 
         createPlayground();
-        play();
+        UserRepository.add("Janko", "map2.txt");
+        //play();
         
         
         

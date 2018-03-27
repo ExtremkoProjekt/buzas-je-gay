@@ -19,7 +19,8 @@ public class DatabaseHandleTables {
         stmt = c.createStatement();
         String sql = "CREATE TABLE IF NOT EXISTS USER " +
                    "(USER_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "TEXTFILE INTEGER"    
+                + "NAME TEXT, "
+                + "TEXTFILE TEXT"    
                 + ");";
         stmt.executeUpdate(sql);
         sql = "CREATE TABLE IF NOT EXISTS TOWNS " +
@@ -35,6 +36,22 @@ public class DatabaseHandleTables {
         c.commit(); 
         
    
+    }
+    
+    public static void dropTables() throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        c.setAutoCommit(false);
+        Statement stmt;     
+        stmt = c.createStatement();
+        String sql = "DROP TABLE IF EXISTS USER; "
+                + "DROP TABLE IF EXISTS TOWNS" ;
+                 
+     
+        stmt.executeUpdate(sql);
+        stmt.close();
+        c.commit(); 
+        
+        
     }
     
     
