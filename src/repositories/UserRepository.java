@@ -36,4 +36,18 @@ public class UserRepository {
         ResultSet rs = pstmt.executeQuery();
         return rs.next();  
     }
+
+    public static String getMapByName(String name) throws ClassNotFoundException, SQLException {
+        Connection c = DatabaseConnection.getConnection();
+        PreparedStatement pstmt;
+        String sql = "SELECT TEXTFILE FROM USER WHERE NAME = ?;";
+        pstmt = c.prepareStatement(sql);
+        pstmt.setString(1, name);
+        ResultSet rs = pstmt.executeQuery();
+        String fname = "";
+        while(rs.next()){
+            fname = rs.getString("TEXTFILE");
+        }
+        return fname;
+    }
 }

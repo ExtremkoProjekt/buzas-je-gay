@@ -35,4 +35,8 @@ public class TownRepository {
         ResultSet rs = pstmt.executeQuery();
         return rs.next();  
     }
+    
+    public static int get_gold_amount(String name) throws ClassNotFoundException, SQLException {
+        return 0;  
+    }    
 }
