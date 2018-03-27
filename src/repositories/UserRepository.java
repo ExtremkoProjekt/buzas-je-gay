@@ -36,5 +36,4 @@ public class UserRepository {
         ResultSet rs = pstmt.executeQuery();
         return rs.next();  
     }
-    
 }

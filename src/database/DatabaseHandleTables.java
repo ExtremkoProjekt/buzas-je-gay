@@ -33,11 +33,9 @@ public class DatabaseHandleTables {
         
         stmt.executeUpdate(sql);
         stmt.close();
-        c.commit(); 
-        
-   
+        c.commit();         
     }
-    
+
     public static void dropTables() throws SQLException, ClassNotFoundException {
         Connection c = DatabaseConnection.getConnection();
         c.setAutoCommit(false);
@@ -52,9 +50,6 @@ public class DatabaseHandleTables {
         c.commit(); 
         
         
-    }
-    
-    
-    
+    }  
 }
 

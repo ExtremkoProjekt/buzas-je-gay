@@ -1,4 +1,3 @@
-
 package repositories;
 
 import database.DatabaseConnection;
@@ -26,4 +25,3 @@ public class TownRepository {
         c.setAutoCommit(true);
     }
 }
-
