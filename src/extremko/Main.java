@@ -25,7 +25,7 @@ public class Main {
         reader = new Scanner(System.in); 
         createPlayground();
         UserRepository.add("Janko", "map2.txt");
-        //play();                     
+        //play();
     }
     
     public static void play() throws IOException, InterruptedException {  
@@ -34,7 +34,7 @@ public class Main {
         
        
     }
-     
+
     public static void login() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
         clear();
         System.out.println("Vitajte v hre!");
