@@ -34,7 +34,7 @@ public class Playground {
             towns.add(new Town(s));
         }   
     }
-    
+        
     public void parseNeighbours(BufferedReader br) throws IOException{
         String line;
         while ((line = br.readLine()) != null) {
