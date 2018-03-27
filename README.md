@@ -13,3 +13,7 @@
  - chod do \strategicka-hra\dist
  - skopiruj donho map.txt
  - spusti java -jar nazov_buildu.jar
+ 
+ # Databaza
+ - ak si chcete spustat queries nad databazou, stiahnite si http://sqlitebrowser.org/
+ 
