@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.Scanner;
+import repositories.TownRepository;
 import repositories.UserRepository;
 
 /**
@@ -17,22 +18,22 @@ public class Main {
     private static Playground playground;
     private static Scanner reader;
     
+    static Random rnd;
+    static int mapCount;
+    static String username;
     
     //java -jar nazov.jar
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         DatabaseHandleTables.dropTables();
-        DatabaseHandleTables.createTables();
+        DatabaseHandleTables.createTables();        
         reader = new Scanner(System.in); 
-        createPlayground();
-        UserRepository.add("Janko", "map2.txt");
-        //play();
-    }
-    
-    public static void play() throws IOException, InterruptedException {  
-        menu();
+        // createPlayground();
+        // UserRepository.add("Janko", "map2.txt");
         
+        rnd = new Random();
+        mapCount = 2;
         
-       
+        login();
     }
 
     public static void login() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
@@ -41,49 +42,77 @@ public class Main {
         System.out.println("--------------------------------------");
         System.out.print("Zadajte vaše meno: " );         
         Scanner reader = new Scanner(System.in); 
-        String name = reader.next();
+        username = reader.next();
+        
+        Playground pg = new Playground();
+        String map_path = "";
         
         // new user
-        if(!UserRepository.exists(name)) {
-            // create new, assign map
-            Random rnd = new Random();
-            int mapCount = 5;
-            String map_path = String.format("map%d.txt", 1 + rnd.nextInt(mapCount));
-            // UserRepository.add(name, map_path);
-            menu();
+        if(!UserRepository.exists(username)) {
+            // create new user and assign picked map  
+            
+            map_path = String.format("map%d.txt", 1 + rnd.nextInt(mapCount));
+            UserRepository.add(username, map_path);                        
         }
         else{
-            menu();
+            map_path = UserRepository.getMapByName(username);
         }
         
+        // create graph        
+        pg.loadMap(map_path);        
+        menu();
        
     }    
     
-    public static void town() throws IOException, InterruptedException {  
+    
+    public static void town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
         clear();
         System.out.println("Tvoje mesto");
         System.out.println("--------------------------------------");
         System.out.println("1 - navrat do menu"); 
+        System.out.println("2 - zoznam budov"); 
+        System.out.println("3 - pocet zlata"); 
         int n = reader.nextInt();
         if (n == 1) {
-            play();
+            menu();
         }
-       
+        else if(n == 2){
+            buildings();
+        }
+        else if(n == 3){
+            goldAmount();
+        }        
+    }   
+    
+    public static void goldAmount() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
+        clear();
+        int goldAmount = TownRepository.get_gold_amount(username);
+        System.out.println("Počet zlata: " + goldAmount);
+        town();
     }
     
-    public static void neighbours() throws IOException, InterruptedException {  
+    public static void buildings() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
         clear();
         Scanner reader = new Scanner(System.in); 
-        System.out.println("Susedia");
+        System.out.println("Budovy");
         System.out.println("--------------------------------------");
-        System.out.println("1 - navrat do menu"); 
+        
+        // TODO: vypis vo forcykle budovy a kolko stoji vylepsenie
+
+        
         int n = reader.nextInt();
-        if (n == 1) {
-            play();
-        }
+        // TODO: zacni vylepsovat budovu
+        
+        
+        // TODO: daj stavat budovu na n tahov
+        
+        
+        // TODO: vykonaj tahy UI
+        
+        town();
     }
     
-    public static void menu() throws IOException, InterruptedException {
+    public static void menu() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
         System.out.println("Menu");
         System.out.println("--------------------------------------");
@@ -98,6 +127,18 @@ public class Main {
             neighbours();
         }
     }
+    
+    public static void neighbours() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
+        clear();
+        Scanner reader = new Scanner(System.in); 
+        System.out.println("Susedia");
+        System.out.println("--------------------------------------");
+        System.out.println("1 - navrat do menu"); 
+        int n = reader.nextInt();
+        if (n == 1) {
+            menu();
+        }
+    }    
     
     public static void createPlayground() throws IOException {
         String path = "map.txt";
