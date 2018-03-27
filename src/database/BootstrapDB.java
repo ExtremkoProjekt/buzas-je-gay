@@ -18,7 +18,7 @@ public class BootstrapDB {
         }
     }
     
-    public static void initDatabase() throws SQLException {
+    public static void initDatabase() throws SQLException, ClassNotFoundException {
         fillBuildings();
         
     }
