@@ -36,7 +36,14 @@ public class TownRepository {
         return rs.next();  
     }
     
-    public static int get_gold_amount(String name) throws ClassNotFoundException, SQLException {
-        return 0;  
+    public static int get_gold_amount(String townName) throws ClassNotFoundException, SQLException {
+        Connection c = DatabaseConnection.getConnection();
+        PreparedStatement pstmt;
+        String sql = "SELECT GOLD FROM TOWN WHERE NAME = ?;";
+        pstmt = c.prepareStatement(sql);
+        pstmt.setString(1, townName);
+        ResultSet rs = pstmt.executeQuery();
+        rs.next();
+        return rs.getInt("GOLD");   
     }    
 }
