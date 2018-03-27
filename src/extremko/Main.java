@@ -24,8 +24,9 @@ public class Main {
     
     //java -jar nazov.jar
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
-        DatabaseHandleTables.dropTables();
-        DatabaseHandleTables.createTables();        
+        //DatabaseHandleTables.dropTables();
+        DatabaseHandleTables.createTables();
+        BootstrapDB.fillBuildings();       
         reader = new Scanner(System.in); 
         // createPlayground();
         // UserRepository.add("Janko", "map2.txt");
