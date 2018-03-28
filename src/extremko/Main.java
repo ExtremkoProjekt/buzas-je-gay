@@ -2,12 +2,17 @@ package extremko;
 
 import database.BootstrapDB;
 import database.DatabaseHandleTables;
+import entities.User;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
+import repositories.BuildingRepository;
 import repositories.TownRepository;
 import repositories.UserRepository;
 
@@ -35,13 +40,13 @@ public class Main {
         rnd = new Random();
         mapCount = 2;
         
+        System.out.println("Vitajte v hre!");
+        System.out.println("--------------------------------------");
         login();
     }
 
     public static void login() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
         clear();
-        System.out.println("Vitajte v hre!");
-        System.out.println("--------------------------------------");
         System.out.print("Zadajte vaše meno: " );         
         Scanner reader = new Scanner(System.in); 
         username = reader.next();
@@ -49,15 +54,27 @@ public class Main {
         Playground pg = new Playground();
         String map_path = "";
         
-        // new user
-        if(!UserRepository.exists(username)) {
-            // create new user and assign picked map  
-            
-            map_path = String.format("map%d.txt", 1 + rnd.nextInt(mapCount));
-            UserRepository.add(username, map_path);                        
+        System.out.println();
+        
+        User player = UserRepository.getUserByName(username);
+        if(player == null){
+            // neexistuje ale existuje s ID 1
+            if(UserRepository.userCount() > 0){
+                System.out.println("!!!ZLE MENO!!! NEEXISTA" ); 
+                login();
+            }
+            else{
+                // neexistuje - vytvor noveho
+                map_path = String.format("map%d.txt", 1 + rnd.nextInt(mapCount));
+                UserRepository.add(username, map_path);                 
+            }
         }
-        else{
+        else if (player.getUserID() == 1){
             map_path = UserRepository.getMapByName(username);
+        }
+        else if (player.getUserID() != 1){
+            System.out.println("!!!ZLE MENO!!! EXISTA ALE ZLA" ); 
+            login();
         }
         
         // create graph        
@@ -88,7 +105,8 @@ public class Main {
     
     public static void goldAmount() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
         clear();
-        int goldAmount = TownRepository.get_gold_amount(username);
+        //int goldAmount = TownRepository.get_gold_amount(townname);
+        int goldAmount = 50;
         System.out.println("Počet zlata: " + goldAmount);
         town();
     }
@@ -101,10 +119,25 @@ public class Main {
         
         // TODO: vypis vo forcykle budovy a kolko stoji vylepsenie
 
+        ArrayList<String> options = BuildingRepository.printTownBuildings("a");
         
+        int ix = 1;
+        for (Iterator<String> i = options.iterator(); i.hasNext();) {
+            String buildInfo = i.next();
+            System.out.println(ix + " - " +buildInfo);
+            ix++;
+        }
         int n = reader.nextInt();
-        // TODO: zacni vylepsovat budovu
         
+        // TODO: zacni vylepsovat budovu
+        if (n == 1) {
+            System.out.println("VYLEPSUJEM BUDOVU: " + n);
+            town();
+        }
+        else if(n == 2){
+            System.out.println("VYLEPSUJEM BUDOVU: " + n);
+            town();
+        }
         
         // TODO: daj stavat budovu na n tahov
         
@@ -142,7 +175,7 @@ public class Main {
         }
     }    
     
-    public static void createPlayground() throws IOException {
+    public static void createPlayground() throws IOException, FileNotFoundException, ClassNotFoundException, SQLException {
         String path = "map.txt";
         playground = new Playground();
         playground.loadMap(path);

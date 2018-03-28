@@ -53,10 +53,10 @@ public class BuildingRepository {
     public static ArrayList<String> printTownBuildings(String townName) throws SQLException, ClassNotFoundException {
         Connection c = DatabaseConnection.getConnection();
         PreparedStatement pstmt;
-        String sql = "SELECT T.NAME AS TOWN_NAME, PRICE, TR.LEVEL FROM TOWN T "
-                + "JOIN BUILDING_TOWN_RELATION TR ON T.TOWN_ID = TR.TOWN_ID "
-                + "JOIN BUILDING B ON TR.BUILDING_ID = B.BUILDING_ID "
-                + "JOIN BUILDING_PROGRESS BP ON BP.BUILDING_ID = B.BUILDING_ID"
+        String sql = "SELECT T.NAME AS TOWN_NAME, B.NAME AS BUILDING_NAME, PRICE, TR.LEVEL FROM TOWN AS T "
+                + "JOIN BUILDING_TOWN_RELATION AS TR ON T.TOWN_ID = TR.TOWN_ID "
+                + "JOIN BUILDING AS B ON TR.BUILDING_ID = B.BUILDING_ID "
+                + "JOIN BUILDING_PROGRESS AS BP ON BP.BUILDING_ID = B.BUILDING_ID "
                 + "WHERE T.NAME = ? AND TR.LEVEL = BP.LEVEL";
         
         pstmt = c.prepareStatement(sql);
@@ -65,7 +65,7 @@ public class BuildingRepository {
         ArrayList<String> buildings = new ArrayList<>();
         while (rs.next()) {
                 
-                String s = rs.getString("TOWN_NAME")+ " LEVEL: " + rs.getString("LEVEL") + " " + rs.getString("PRICE");
+                String s = "BUDOVA: " +rs.getString("BUILDING_NAME")+ " LEVEL: " + rs.getString("LEVEL") + " VYLEPSIT ZA: " + rs.getString("PRICE")+ " ZLATA ";
                
         
                 buildings.add(s); 

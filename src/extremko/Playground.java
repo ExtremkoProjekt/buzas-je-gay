@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import repositories.TownRepository;
+import repositories.UserRepository;
 
 /**
  *
@@ -17,7 +20,7 @@ public class Playground {
         towns = new ArrayList<Town>();
     }
     
-    public void loadMap(String path) throws FileNotFoundException, IOException {
+    public void loadMap(String path) throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             //first line of text file contains all towns
             String line = br.readLine();
@@ -29,9 +32,14 @@ public class Playground {
         }
     }
     
-    public void parseTowns(String input){
+    public void parseTowns(String input) throws ClassNotFoundException, SQLException{
+        int ix = 1;
         for (String s: input.split(" ")) {
             towns.add(new Town(s));
+//            if(ix > 1)
+//                UserRepository.add("computer" + ix);
+//            TownRepository.add(s, ix);
+//            ix++;
         }   
     }
         
