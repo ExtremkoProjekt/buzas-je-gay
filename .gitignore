@@ -35,5 +35,4 @@ database.db
 # IntelliJ
 out/
 .idea/
-extremko.iml
-strategicka-hra.iml
+*.iml
