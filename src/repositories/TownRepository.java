@@ -106,7 +106,7 @@ public class TownRepository {
         if (!rs.next())
             return null;
 
-        Town town = new Town();
+        Town town = new Town(rs.getString("NAME"));
         town.setTownID(rs.getInt("TOWN_ID"));
         town.setArmy(rs.getInt("ARMY"));
         town.setUserID(rs.getInt("USER_ID"));

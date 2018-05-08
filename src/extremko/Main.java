@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -89,7 +90,6 @@ public class Main {
     
     public static void town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-
         int goldAmount = TownRepository.getGoldAmount(town.getName());
 
         System.out.println("Tvoje mesto " + town.getName() + ". Počet zlata: " + goldAmount);
