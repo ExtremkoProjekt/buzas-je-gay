@@ -45,5 +45,20 @@ public class TownRepository {
         ResultSet rs = pstmt.executeQuery();
         rs.next();
         return rs.getInt("GOLD");   
-    }    
+    }
+
+    public static int townCount() throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        PreparedStatement pstmt;
+        String sql = "SELECT COUNT(*) U_COUNT FROM TOWN";
+
+        pstmt = c.prepareStatement(sql);
+
+        ResultSet rs = pstmt.executeQuery();
+        rs.next();
+        int res = rs.getInt("U_COUNT");
+        rs.close();
+        pstmt.close();
+        return res;
+    }
 }
