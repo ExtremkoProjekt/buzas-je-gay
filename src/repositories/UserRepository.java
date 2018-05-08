@@ -2,11 +2,14 @@ package repositories;
 
 import database.DatabaseConnection;
 import entities.User;
+import extremko.Town;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  *
@@ -49,7 +52,7 @@ public class UserRepository {
         pstmt.setString(1, name);
         ResultSet rs = pstmt.executeQuery();
         
-        if (rs.next() == false)
+        if (!rs.next())
             return null;
         
         User user = new User();
@@ -74,6 +77,28 @@ public class UserRepository {
         rs.close();
         pstmt.close();
         return res;
+    }
+
+    public static ArrayList<User> getEnemies(String userName) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        PreparedStatement pstmt;
+        String sql = "SELECT USER_ID, NAME " +
+                "FROM USER " +
+                "WHERE NAME != ?";
+
+        pstmt = c.prepareStatement(sql);
+        pstmt.setString(1, userName);
+        ResultSet rs = pstmt.executeQuery();
+        ArrayList<User> users = new ArrayList<>();
+        while (rs.next()) {
+            User t = new User();
+            t.setUserID(rs.getInt("USER_ID"));
+            t.setName(rs.getString("NAME"));
+            users.add(t);
+        }
+        rs.close();
+        pstmt.close();
+        return users;
     }
     
     

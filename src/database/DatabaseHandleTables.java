@@ -28,7 +28,7 @@ public class DatabaseHandleTables {
                 + "NAME TEXT, "
                 + "GOLD INTEGER DEFAULT 50, "
                 + "ARMY INTEGER DEFAULT 0, "
-                + "USER_ID, "
+                + "USER_ID INTEGER, "
                 + "FOREIGN KEY(USER_ID) REFERENCES USER(USER_ID)"
                 + ");";
         stmt.executeUpdate(sql);
