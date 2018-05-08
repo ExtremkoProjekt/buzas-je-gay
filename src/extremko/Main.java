@@ -197,7 +197,7 @@ public class Main {
         ArrayList<Town> user_towns = TownRepository.getTownsByUsername(username);
 
         for (Town town : user_towns){
-            System.out.println(town.getTownID +  " - " + town.getName());
+            System.out.println(town.getTownID() +  " - " + town.getName());
         }
 
         town_name = reader.next();
@@ -210,7 +210,7 @@ public class Main {
         System.out.println("Protihraci");
         System.out.println("--------------------------------------");
 
-        ArrayList<User> enemies  = User.getEnemies(username);
+        ArrayList<User> enemies  = UserRepository.getEnemies(username);
 
         for (User enemy : enemies){
             System.out.println(enemy.getUserID() +  " - " + enemy.getName());
