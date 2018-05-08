@@ -2,6 +2,7 @@ package extremko;
 
 import database.BootstrapDB;
 import database.DatabaseHandleTables;
+import entities.Building;
 import entities.User;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -12,7 +13,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
+
+import org.omg.PortableInterceptor.USER_EXCEPTION;
 import repositories.BuildingRepository;
+import repositories.BuildingTownRelationRepository;
 import repositories.TownRepository;
 import repositories.UserRepository;
 
@@ -26,8 +30,8 @@ public class Main {
     
     static Random rnd;
     static int mapCount;
-    static String username;
-    static String town_name;
+    static User user;
+    static Town town;
 
     //java -jar nazov.jar
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
@@ -35,7 +39,7 @@ public class Main {
         DatabaseHandleTables.createTables();
 
         reader = new Scanner(System.in);
-        
+
         rnd = new Random();
         mapCount = 2;
         
@@ -47,20 +51,21 @@ public class Main {
     public static void login() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
         clear();
         System.out.print("Zadajte vaše meno: " );
-        Scanner reader = new Scanner(System.in); 
-        username = reader.next();
+        Scanner reader = new Scanner(System.in);
+
+        user = UserRepository.getUserByName(reader.next());
         
         Playground pg = new Playground();
         String map_path = "";
         
         System.out.println();
 
-        boolean player_exists = UserRepository.exists(username);
+        boolean player_exists = UserRepository.exists(user.getName());
 
         if (player_exists){
-            User player = UserRepository.getUserByName(username);
+            User player = UserRepository.getUserByName(user.getName());
             if (player.getUserID() == 1){ // nie computer
-                map_path = UserRepository.getMapByName(username);
+                map_path = UserRepository.getMapByName(user.getName());
             }
             else{
                 System.out.println("Zle meno!!! Zadajte vase prihlasovacie meno");
@@ -76,7 +81,7 @@ public class Main {
             else{
                 // vytvor hraca s ID 1 - pouzivatela
                 map_path = "map1.txt";
-                UserRepository.add(username, map_path);
+                UserRepository.add(user.getName(), map_path);
             }
         }
         
@@ -84,23 +89,22 @@ public class Main {
         pg.loadMap(map_path);
         BootstrapDB.initDatabase();
         menu();
-       
     }    
     
     
     public static void town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
 
-        //TODO: int goldAmount = TownRepository.get_gold_amount(town_name);
-        int goldAmount = 50;
+        int goldAmount = TownRepository.getGooldAmount(town.getName());
 
-        System.out.println("Tvoje mesto " + town_name + ". Počet zlata: " + goldAmount);
+        System.out.println("Tvoje mesto " + town.getName() + ". Počet zlata: " + goldAmount);
         System.out.println("--------------------------------------");
         System.out.println("1 - navrat do menu"); 
         System.out.println("2 - vylepsit budovu");
         System.out.println("3 - postav armadu");
         System.out.println("4 - zautoc na mesto");
         System.out.println("5 - preber mesto");
+        System.out.println("6 - dalsi krok");
         int n = reader.nextInt();
         if (n == 1) {
             menu();
@@ -117,53 +121,91 @@ public class Main {
         else if(n == 5){
             capture_enemy_town();
         }
+        else if(n == 6){
+            next_step();
+        }
+    }
+
+    public static boolean can_nake_step(){
+        return BuildingStepRepository.count() == 0 && ArmyStepRepository.count() == 0;
     }
 
     public static void upgrade_building() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
+
+        if (!can_nake_step()){
+            System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
+            town();
+        }
         Scanner reader = new Scanner(System.in); 
         System.out.println("Budovy");
         System.out.println("--------------------------------------");
-        System.out.println(town_name);
 
-        ArrayList<String> options = BuildingRepository.printTownBuildings(town_name);
-        
-        int ix = 1;
-        for (Iterator<String> i = options.iterator(); i.hasNext();) {
-            String buildInfo = i.next();
-            System.out.println(ix + " - " + buildInfo);
-            ix++;
-        }
-        int n = reader.nextInt();
-        
-        // TODO: zacni vylepsovat budovu
-        if (n == 1) {
-            // TODO: pozri ci ma dost zlata na vylepsenie na dany level
-            System.out.println("VYLEPSUJEM BUDOVU: " + n);
-            town();
-        }
-        else if(n == 2){
-            System.out.println("VYLEPSUJEM BUDOVU: " + n);
-            town();
-        }
-        
-        // TODO: daj stavat budovu na n tahov
+        ArrayList<Building> buildings = BuildingRepository.getTonwBuildingsWithRelations(town.getName());
 
+        for (Building building : buildings) {
+            System.out.println(building.getBuildingID() + " - BUDOVA: " +building.getName()+ " LEVEL: " + building.getLevel() + " VYLEPSIT ZA: " + building.getPrice()+ " ZLATA " + " ZA POCET KROKOV " +  building.getSteps(););
+        }
 
-        // TODO: vykonaj tahy UI
+        int building_id = reader.nextInt();
+        Building selected_building;
+
+        for (Building building : buildings){
+            if(selected_building.getBuildingID() == building_id){
+                selected_building = building;
+                break;
+            }
+        }
+
+        if(BuildingTownRelationRepository.canUpgradeBuilding(selected_building.getBuildingID(), town.getTownID())){
+
+            BuildingStepRepository.insert(selected_building, town);
+
+            System.out.println("Budova zaradena na vylepsenie");
+            menu();
+        }
+        else{
+            System.out.println("Budova sa nedala vylepsit");
+            upgrade_building();
+        }
 
         town();
     }
 
     public static void build_army() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
-
+        clear();
+        if (!can_nake_step()){
+            System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
+            town();
+        }
         // TODO: ukaz nakup vojakov
+
+        System.out.print("Pocet vojakov v meste: " + town.getArmy() + ". Pocet zlata v meste: " + );
+        System.out.print("Zadaj pocet vojakov na nakup:");
+        Scanner reader = new Scanner(System.in);
+        int number_of_soldiers = reader.nextInt();
+
+        if(TownRepository.canBuySoldiers(town, number_of_soldiers)){
+
+            TownRepository.updateArmy(town, number_of_soldiers);
+
+            System.out.println("Vojaci zaradeny na kupenie");
+            menu();
+        }
+        else{
+            System.out.println("Vojaci sa nedaju kupit");
+            build_army();
+        }
 
     }
 
     public static void attack_enemy() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        int enemy_id = enemy_list();
+        if (!can_nake_step()){
+            System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
+            town();
+        }
+        User selected_enemy = choosen_enemy();
 
         // TODO: pridaj na kolko krokov moze zautocit ?
         // TODO: najdi najkratsiu cestu
@@ -173,71 +215,90 @@ public class Main {
 
     public static void capture_enemy_town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        int enemy_id = enemy_list();
+        if (!can_nake_step()){
+            System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
+            town();
+        }
+        User selected_enemy = choosen_enemy();
 
         // TODO: check hlavnu budovu ci je na full ak hej pridaj kroky
 
+    }
+
+    public static void next_step() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
+
+        // TODO: obnova zlata, zmena remianing steps, vykonaj AI
+
+        TownRepository.generateGold();
+
+        if(BuildingStepRepository.count() > 0){
+            BuildingStepRepository.updateSteps();
+        }
+
+        if(ArmyStepRepository.count() > 0){
+            ArmyStepRepository.updateSteps();
+        }
+
+        makeAISteps();
+
+    }
+
+    public static void makeAISteps() throws SQLException, ClassNotFoundException {
+
+        ArrayList<User> enemies  = UserRepository.getEnemies(user.getName());
+        for (User enemy : enemies){
+            enemy.simulateAI();
+        }
     }
 
 
     
     public static void menu() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-
-        // TODO: zobraz podla akutualneho poctu miest pouzivatela
         System.out.println("Tvoje Mesta");
+        System.out.println("Vyber jedno mesto");
         System.out.println("--------------------------------------");
-//        System.out.println("1 - Zobraz svoje mesto");
-//        int n = reader.nextInt();
 
-        town_name = "a"; // TODO: zobraz podla akutualneho poctu miest pouzivatela
-
-        ArrayList<Town> user_towns = TownRepository.getTownsByUsername(username);
+        ArrayList<Town> user_towns = TownRepository.getTownsByUsername(user.getName());
 
         for (Town town : user_towns){
-            System.out.println(town.getTownID() +  " - nazov mesta " + town.getName());
+            System.out.println(town.getTownID() +  " - mesto: " + town.getName());
         }
-
         int test_id = reader.nextInt();
 
-        for (Town town : user_towns){
-            if(town.getTownID() == test_id){
-                town_name = town.getName();
+        for (Town t : user_towns){
+            if(t.getTownID() == test_id){
+                town = TownRepository.getTownByName(t.getName());
                 break;
             }
         }
         town();
     }
     
-    public static int enemy_list() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
+    public static User choosen_enemy() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
         Scanner reader = new Scanner(System.in); 
         System.out.println("Protihraci");
         System.out.println("--------------------------------------");
 
-        ArrayList<User> enemies  = UserRepository.getEnemies(username);
+        ArrayList<User> enemies  = UserRepository.getEnemies(user.getName());
 
         for (User enemy : enemies){
             System.out.println(enemy.getUserID() +  " - " + enemy.getName());
         }
 
-        return reader.nextInt();
-    }    
-    
-    public static void createPlayground() throws IOException, FileNotFoundException, ClassNotFoundException, SQLException {
-        String path = "map1.txt";
-        playground = new Playground();
-        playground.loadMap(path);
-        //playground.printMap();
+        int selected_enemy = reader.nextInt();
+
+        for (User enemy : enemies){
+            if(enemy.getUserID() == selected_enemy){
+                return enemy;
+            }
+        }
     }
     
     public static void clear() throws IOException, InterruptedException {
         new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-        
     }
-
-    
-    
 }
 
 
