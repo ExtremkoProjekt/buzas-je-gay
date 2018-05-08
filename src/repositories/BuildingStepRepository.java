@@ -43,6 +43,18 @@ public class BuildingStepRepository {
         return res;
     }
 
+    public static void deleteIfDone() throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        c.setAutoCommit(false);
+        String sql = "DELETE FROM BUILDING_STEP WHERE REMAINING_STEPS = 0";
+        PreparedStatement pstmt;
+        pstmt = c.prepareStatement(sql);
+        pstmt.executeUpdate();
+        pstmt.close();
+        c.commit();
+        c.setAutoCommit(true);
+    }
+
     public static void updateSteps(Town t) throws SQLException, ClassNotFoundException {
         Connection c = DatabaseConnection.getConnection();
         c.setAutoCommit(false);
