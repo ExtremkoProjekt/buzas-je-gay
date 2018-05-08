@@ -86,4 +86,31 @@ public class TownRepository {
         pstmt.close();
         return towns;
     }
+
+    public static ArrayList<Town> getTownsByUsername(String userName) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        PreparedStatement pstmt;
+        String sql = "SELECT TOWN_ID, T.NAME, GOLD, ARMY, T.USER_ID " +
+                "FROM TOWN AS T " +
+                "JOIN USER AS U ON T.USER_ID = U.USER_ID " +
+                "WHERE U.NAME = ?";
+
+        pstmt = c.prepareStatement(sql);
+        pstmt.setString(1, userName);
+        ResultSet rs = pstmt.executeQuery();
+        ArrayList<Town> towns = new ArrayList<>();
+        while (rs.next()) {
+            Town t = new Town(rs.getString("NAME"));
+            t.setTownID(rs.getInt("TOWN_ID"));
+            t.setUserID(rs.getInt("USER_ID"));
+            t.setArmy(rs.getInt("ARMY"));
+            t.setGold(rs.getInt("GOLD"));
+            towns.add(t);
+        }
+        rs.close();
+        pstmt.close();
+        return towns;
+    }
+
+
 }
