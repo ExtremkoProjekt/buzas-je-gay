@@ -149,7 +149,7 @@ public class Main {
         //wtf nechapem kde toto inicializujes
         Building selected_building;
         for (Building building : buildings){
-            if(selected_building.getBuildingID() == building_id){
+            if(building.getBuildingID() == building_id){
                 selected_building = building;
                 break;
             }
