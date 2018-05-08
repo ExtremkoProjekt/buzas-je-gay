@@ -15,10 +15,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 import org.omg.PortableInterceptor.USER_EXCEPTION;
-import repositories.BuildingRepository;
-import repositories.BuildingTownRelationRepository;
-import repositories.TownRepository;
-import repositories.UserRepository;
+import repositories.*;
 
 /**
  *
@@ -95,7 +92,7 @@ public class Main {
     public static void town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
 
-        int goldAmount = TownRepository.getGooldAmount(town.getName());
+        int goldAmount = TownRepository.getGoldAmount(town.getName());
 
         System.out.println("Tvoje mesto " + town.getName() + ". Počet zlata: " + goldAmount);
         System.out.println("--------------------------------------");
@@ -126,14 +123,14 @@ public class Main {
         }
     }
 
-    public static boolean can_nake_step(){
-        return BuildingStepRepository.count() == 0 && ArmyStepRepository.count() == 0;
+    public static boolean can_make_step() throws SQLException, ClassNotFoundException {
+        return BuildingStepRepository.count(town) == 0 && ArmyStepRepository.count(town) == 0;
     }
 
     public static void upgrade_building() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
 
-        if (!can_nake_step()){
+        if (!can_make_step()){
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
@@ -144,12 +141,12 @@ public class Main {
         ArrayList<Building> buildings = BuildingRepository.getTonwBuildingsWithRelations(town.getName());
 
         for (Building building : buildings) {
-            System.out.println(building.getBuildingID() + " - BUDOVA: " +building.getName()+ " LEVEL: " + building.getLevel() + " VYLEPSIT ZA: " + building.getPrice()+ " ZLATA " + " ZA POCET KROKOV " +  building.getSteps(););
+            System.out.println(building.getBuildingID() + " - BUDOVA: " +building.getName()+ " LEVEL: " + building.getLevel() + " VYLEPSIT ZA: " + building.getPrice()+ " ZLATA " + " ZA POCET KROKOV " +  building.getSteps());
         }
 
         int building_id = reader.nextInt();
+        //wtf nechapem kde toto inicializujes
         Building selected_building;
-
         for (Building building : buildings){
             if(selected_building.getBuildingID() == building_id){
                 selected_building = building;
@@ -174,21 +171,20 @@ public class Main {
 
     public static void build_army() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        if (!can_nake_step()){
+        if (!can_make_step()){
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
         // TODO: ukaz nakup vojakov
 
-        System.out.print("Pocet vojakov v meste: " + town.getArmy() + ". Pocet zlata v meste: " + );
+        System.out.print("Pocet vojakov v meste: " + town.getArmy() + ". Pocet zlata v meste: " + town.getGold());
         System.out.print("Zadaj pocet vojakov na nakup:");
         Scanner reader = new Scanner(System.in);
         int number_of_soldiers = reader.nextInt();
 
         if(TownRepository.canBuySoldiers(town, number_of_soldiers)){
-
             TownRepository.updateArmy(town, number_of_soldiers);
-
+            // TREBA DOKODIT AJ STRHNUTIE Z GOLDU
             System.out.println("Vojaci zaradeny na kupenie");
             menu();
         }
@@ -201,7 +197,7 @@ public class Main {
 
     public static void attack_enemy() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        if (!can_nake_step()){
+        if (!can_make_step()){
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
@@ -215,7 +211,7 @@ public class Main {
 
     public static void capture_enemy_town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        if (!can_nake_step()){
+        if (!can_make_step()){
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
@@ -229,14 +225,14 @@ public class Main {
 
         // TODO: obnova zlata, zmena remianing steps, vykonaj AI
 
-        TownRepository.generateGold();
+        TownRepository.generateGold(town);
 
-        if(BuildingStepRepository.count() > 0){
-            BuildingStepRepository.updateSteps();
+        if(BuildingStepRepository.count(town) > 0){
+           BuildingStepRepository.updateSteps();
         }
 
-        if(ArmyStepRepository.count() > 0){
-            ArmyStepRepository.updateSteps();
+        if(ArmyStepRepository.count(town) > 0){
+           ArmyStepRepository.updateSteps();
         }
 
         makeAISteps();
@@ -294,6 +290,7 @@ public class Main {
                 return enemy;
             }
         }
+        return null;
     }
     
     public static void clear() throws IOException, InterruptedException {

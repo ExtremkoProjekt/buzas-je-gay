@@ -29,6 +29,55 @@ public class TownRepository {
         c.setAutoCommit(true);
     }
 
+    public static void generateGold(Town t) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        c.setAutoCommit(false);
+        String sql = "UPDATE TOWN SET GOLD = GOLD + " +
+                "(SELECT VALUE FROM TOWN AS T " +
+        "JOIN BUILDING_TOWN_RELATION AS BTR ON T.TOWN_ID = BTR.TOWN_ID " +
+        "JOIN BUILDING AS B ON BTR.BUILDING_ID = B.BUILDING_ID " +
+        "JOIN BUILDING_PROGRESS BP ON B.BUILDING_ID = BP.BUILDING_ID " +
+        "AND BP.LEVEL = BTR.LEVEL " +
+        "WHERE T.TOWN_ID = ?";
+        PreparedStatement pstmt;
+        pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1, t.getTownID());
+
+        pstmt.executeUpdate();
+        pstmt.close();
+        c.commit();
+        c.setAutoCommit(true);
+    }
+
+    public static void updateArmy(Town t, int soldiers) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        c.setAutoCommit(false);
+        String sql = "UPDATE TOWN SET ARMY = ARMY + ? " +
+                "WHERE TOWN_ID = ?;";
+        PreparedStatement pstmt;
+        pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1, soldiers);
+        pstmt.setInt(2, t.getTownID());
+        pstmt.executeUpdate();
+        pstmt.close();
+        c.commit();
+        c.setAutoCommit(true);
+    }
+
+    public static boolean canBuySoldiers(Town t, int soldiers) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        PreparedStatement pstmt;
+        String sql = "SELECT GOLD FROM TOWN WHERE TOWN_ID = ?";
+        pstmt = c.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery();
+        rs.next();
+        int res = rs.getInt("GOLD");
+        rs.close();
+        pstmt.close();
+        return res >= soldiers * 3; //cena za jedneho vojaka
+
+    }
+
     public static Town getTownByName(String town_name) throws SQLException, ClassNotFoundException {
         Connection c = DatabaseConnection.getConnection();
         PreparedStatement pstmt;
@@ -61,7 +110,7 @@ public class TownRepository {
         return rs.next();  
     }
     
-    public static int getGooldAmount(String townName) throws ClassNotFoundException, SQLException {
+    public static int getGoldAmount(String townName) throws ClassNotFoundException, SQLException {
         Connection c = DatabaseConnection.getConnection();
         PreparedStatement pstmt;
         String sql = "SELECT GOLD FROM TOWN WHERE NAME = ?;";
