@@ -87,14 +87,18 @@ public class DatabaseHandleTables {
         Statement stmt;     
         stmt = c.createStatement();
         String sql = "DROP TABLE IF EXISTS USER; "
-                + "DROP TABLE IF EXISTS TOWN" ;
+                + "DROP TABLE IF EXISTS TOWN; " +
+                "DROP TABLE IF EXISTS BUILDING; " +
+                "DROP TABLE IF EXISTS BUILDING_PROGRESS; " +
+                "DROP TABLE IF EXISTS BUILDING_STEP; " +
+                "DROP TABLE IF EXISTS BUILDING_TOWN_RELATION; " +
+                "DROP TABLE IF EXISTS ARMY_STEP; " +
+                "" ;
                  
      
         stmt.executeUpdate(sql);
         stmt.close();
-        c.commit(); 
-        
-        
+        c.commit();
     }  
 }
 
