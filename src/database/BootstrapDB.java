@@ -20,7 +20,6 @@ public class BootstrapDB {
             BuildingRepository.add("Kasarne");
             BuildingRepository.add("Zlata bana");
             BuildingRepository.add("Hlavna budova");
-            
         }
     }
 
@@ -61,5 +60,4 @@ public class BootstrapDB {
         fillBuildingTownRelation();
         fillBuildingProgress();
     }
-    
 }
