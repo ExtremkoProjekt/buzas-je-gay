@@ -38,31 +38,31 @@ Každý hráč dostáva na začiatku 50 zlatiek (50 G). Vylepšovanie budov a v
 
 ### Ceny
 
-* Jeden vojak = 2 G
-* Kasárne 2. úroveň = 30 G
-* Kasárne 3. úroveň = 45 G
-* Kasárne 4. úroveň = 60 G
-* Kasárne 5. úroveň = 75 G
-* Zlatá baňa 2. úroveň = 50 G
-* Zlatá baňa 3. úroveň = 75 G
-* Zlatá baňa 4. úroveň = 100 G
-* Zlatá baňa 5. úroveň = 125 G
-* 2. úroveň = 40 G
-* 3. úroveň = 60 G
-* 4. úroveň = 80 G
-* 5. úroveň = 100 G
+* Jeden vojak = **2 G**
+* Kasárne 2. úroveň = **30 G**
+* Kasárne 3. úroveň = **45 G**
+* Kasárne 4. úroveň = **60 G**
+* Kasárne 5. úroveň = **75 G**
+* Zlatá baňa 2. úroveň = **50 G**
+* Zlatá baňa 3. úroveň = **75 G**
+* Zlatá baňa 4. úroveň = **100 G**
+* Zlatá baňa 5. úroveň = **125 G**
+* Hlavná budova 2. úroveň = **40 G**
+* Hlavná budova úroveň = **60 G**
+* Hlavná budova úroveň = **80 G**
+* Hlavná budova úroveň = **100 G**
 
 ## Ťahanie
 
 V každom ťahu môže hráč vykonať len jednu činnosť: 
-* vyrobiť vojakov
-* vylepšiť budovu
-* zaútočiť
-* nespraviť nič
+* **vyrobiť vojakov**
+* **vylepšiť budovu**
+* **zaútočiť**
+* **nespraviť nič**
 
 Každým z týchto ťahov dostáva hráč zo Zlatej bane určený obnos G (podľa úrovne vylepšenia Zlatej bane).
 
-Výroba vojakov a vylepšovanie budov trvá istý počet ťahov. Počas týchto ťahov hráč nemôže nič robiť. Rovnako, presun vojska medzi mestami trvá istý počet krokov (podľa mapy – neorientovaný graf).
+Výroba vojakov a vylepšovanie budov trvá istý počet ťahov. Počas týchto ťahov hráč nemôže nič robiť. Rovnako, presun vojska medzi mestami trvá istý počet krokov (podľa mapy – **neorientovaný graf**).
 
 Ak hráč dosiahne možnosť útočiť na protihráčove mesto (vylepší hlavnú budovu na úroveň 5), môže zobrať ľubovoľnú časť svojej armády a zaútočiť na mesto. Ak hráčovi zostane po útoku na mesto aspoň jeden vojak, môže toto mesto obsadiť. Tým získa nové mesto a porazí vyradí protihráča. Cieľom hry je obsadiť všetky mestá a tým vyhrať hru. 
 
