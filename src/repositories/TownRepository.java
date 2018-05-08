@@ -28,6 +28,28 @@ public class TownRepository {
         c.commit();
         c.setAutoCommit(true);
     }
+
+    public static Town getTownByName(String town_name) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        PreparedStatement pstmt;
+        String sql = "SELECT * FROM TOWN WHERE TOWN_NAME = ?;";
+
+        pstmt = c.prepareStatement(sql);
+        pstmt.setString(1, town_name);
+        ResultSet rs = pstmt.executeQuery();
+
+        if (!rs.next())
+            return null;
+
+        Town town = new Town();
+        town.setTownID(rs.getInt("TOWN_ID"));
+        town.setArmy(rs.getInt("ARMY"));
+        town.setUserID(rs.getInt("USER_ID"));
+        town.setGold(rs.getInt("GOLD"));
+        rs.close();
+        pstmt.close();
+        return town;
+    }
      
     public static boolean exists(String name) throws ClassNotFoundException, SQLException {
         Connection c = DatabaseConnection.getConnection();
@@ -39,7 +61,7 @@ public class TownRepository {
         return rs.next();  
     }
     
-    public static int get_gold_amount(String townName) throws ClassNotFoundException, SQLException {
+    public static int getGooldAmount(String townName) throws ClassNotFoundException, SQLException {
         Connection c = DatabaseConnection.getConnection();
         PreparedStatement pstmt;
         String sql = "SELECT GOLD FROM TOWN WHERE NAME = ?;";
