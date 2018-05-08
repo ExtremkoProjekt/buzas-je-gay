@@ -33,8 +33,8 @@ public class Main {
         //DatabaseHandleTables.dropTables();
         DatabaseHandleTables.createTables();
         BootstrapDB.initDatabase();
-        reader = new Scanner(System.in); 
-        // createPlayground();
+        reader = new Scanner(System.in);
+        //createPlayground();
         // UserRepository.add("Janko", "map2.txt");
         
         rnd = new Random();
@@ -47,7 +47,7 @@ public class Main {
 
     public static void login() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
         clear();
-        System.out.print("Zadajte vaše meno: " );         
+        System.out.print("Zadajte vaše meno: " );
         Scanner reader = new Scanner(System.in); 
         username = reader.next();
         
@@ -176,7 +176,7 @@ public class Main {
     }    
     
     public static void createPlayground() throws IOException, FileNotFoundException, ClassNotFoundException, SQLException {
-        String path = "map.txt";
+        String path = "map1.txt";
         playground = new Playground();
         playground.loadMap(path);
         //playground.printMap();
