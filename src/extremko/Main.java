@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
-
-import org.omg.PortableInterceptor.USER_EXCEPTION;
 import repositories.*;
 
 /**
@@ -148,24 +146,29 @@ public class Main {
 
         //wtf nechapem kde toto inicializujes
         Building selected_building;
+
         for (Building building : buildings){
             if(building.getBuildingID() == building_id){
                 selected_building = building;
+
+
+                if(BuildingTownRelationRepository.canUpgradeBuilding(selected_building.getBuildingID(), town.getTownID())){
+
+                    BuildingStepRepository.insert(selected_building, town);
+
+                    System.out.println("Budova zaradena na vylepsenie");
+                    menu();
+                }
+                else{
+                    System.out.println("Budova sa nedala vylepsit");
+                    upgrade_building();
+                }
+
                 break;
             }
         }
 
-        if(BuildingTownRelationRepository.canUpgradeBuilding(selected_building.getBuildingID(), town.getTownID())){
 
-            BuildingStepRepository.insert(selected_building, town);
-
-            System.out.println("Budova zaradena na vylepsenie");
-            menu();
-        }
-        else{
-            System.out.println("Budova sa nedala vylepsit");
-            upgrade_building();
-        }
 
         town();
     }
@@ -244,7 +247,7 @@ public class Main {
 
         ArrayList<User> enemies  = UserRepository.getEnemies(user.getName());
         for (User enemy : enemies){
-            enemy.simulateAI();
+            //enemy.simulateAI();
         }
     }
 
