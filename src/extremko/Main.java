@@ -32,7 +32,7 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         //DatabaseHandleTables.dropTables();
         DatabaseHandleTables.createTables();
-        BootstrapDB.initDatabase();
+
         reader = new Scanner(System.in);
         
         rnd = new Random();
@@ -80,7 +80,8 @@ public class Main {
         }
         
         // create graph        
-        pg.loadMap(map_path);        
+        pg.loadMap(map_path);
+        BootstrapDB.initDatabase();
         menu();
        
     }    
