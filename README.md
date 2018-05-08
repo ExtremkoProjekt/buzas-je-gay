@@ -14,21 +14,21 @@ Kasárne, Zlatú baňa, Hlavnú budova
 
 Hráč môže každú budovu vylepšovať, tie majú 5 úrovní vylepšenia. Pri spustení hry má každá budova úroveň 1 a ďalšie úrovne hráč odomyká zaplatením určitého obnosu zlata.
 
-###Kasárne
+### Kasárne
 * **úroveň 1** – v jednom kroku dokáže kasáreň vyrobiť **max. 5 vojakov**
 * **úroveň 2** – v jednom kroku dokáže kasáreň vyrobiť **max. 20 vojakov**
 * **úroveň 3** – v jednom kroku dokáže kasáreň vyrobiť **max. 45 vojakov**
 * **úroveň 4** – v jednom kroku dokáže kasáreň vyrobiť **max. 80 vojakov**
 * **úroveň 5** – v jednom kroku dokáže kasáreň vyrobiť **max. 125 vojakov**
 
-###Zlatá baňa
+### Zlatá baňa
 * **úroveň 1** – v jednom kroku dodá každému hráčovi **5 zlatiek**
 * **úroveň 2** – v jednom kroku dodá každému hráčovi **10 zlatiek**
 * **úroveň 3** – v jednom kroku dodá každému hráčovi **15 zlatiek**
 * **úroveň 4** – v jednom kroku dodá každému hráčovi **20 zlatiek**
 * **úroveň 5** – v jednom kroku dodá každému hráčovi **25 zlatiek**
 
-###Hlavná budova
+### Hlavná budova
 
 má rovnako možnosť vylepšenia na 5. úroveň. Po dosiahnutí 5. úrovne sa hráčovi povolí možnosť obsadiť protivníkove mestá.
 
@@ -36,7 +36,7 @@ má rovnako možnosť vylepšenia na 5. úroveň. Po dosiahnutí 5. úrovne sa h
 
 Každý hráč dostáva na začiatku 50 zlatiek (50 G). Vylepšovanie budov a vyrábanie vojakov stojí určitý obnos G.
 
-###Ceny
+### Ceny
 
 * Jeden vojak = 2 G
 * Kasárne 2. úroveň = 30 G
@@ -52,7 +52,7 @@ Každý hráč dostáva na začiatku 50 zlatiek (50 G). Vylepšovanie budov a v
 * 4. úroveň = 80 G
 * 5. úroveň = 100 G
 
-##Ťahanie
+## Ťahanie
 
 V každom ťahu môže hráč vykonať len jednu činnosť: 
 * vyrobiť vojakov
@@ -67,7 +67,7 @@ Výroba vojakov a vylepšovanie budov trvá istý počet ťahov. Počas týchto 
 Ak hráč dosiahne možnosť útočiť na protihráčove mesto (vylepší hlavnú budovu na úroveň 5), môže zobrať ľubovoľnú časť svojej armády a zaútočiť na mesto. Ak hráčovi zostane po útoku na mesto aspoň jeden vojak, môže toto mesto obsadiť. Tým získa nové mesto a porazí vyradí protihráča. Cieľom hry je obsadiť všetky mestá a tým vyhrať hru. 
 
 
-#Autori
+# Autori
 * Buzáš Matej
 * Hrtánek Viktor
 * Ortutay Štefan
