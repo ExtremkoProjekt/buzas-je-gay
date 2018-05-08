@@ -3,6 +3,7 @@ package database;
 
 import java.sql.SQLException;
 import entities.BuildingProgress;
+import repositories.BuildingProgressRepository;
 import repositories.BuildingTownRelationRepository;
 import repositories.BuildingRepository;
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class BootstrapDB {
                 BuildingProgressRepository.insert(new BuildingProgress(3, i, i * 20, 0, i - 1));
             }
             else{ // ak je Hlavna budova == level 5, value zvys na 1 (inak 0)
-                BuildingProgressRepository.insert(new BuildingProgress(3, i, i * 20, 1, i - 1);
+                BuildingProgressRepository.insert(new BuildingProgress(3, i, i * 20, 1, i - 1));
             }
         }
     }    

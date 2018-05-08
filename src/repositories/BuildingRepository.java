@@ -78,7 +78,8 @@ public class BuildingRepository {
     public static ArrayList<Building> getTonwBuildingsWithRelations(String townName) throws SQLException, ClassNotFoundException {
         Connection c = DatabaseConnection.getConnection();
         PreparedStatement pstmt;
-        String sql = "SELECT B.BUILDING_ID, B.NAME AS BUILDING_NAME, PRICE, TR.LEVEL FROM TOWN AS T, STEPS "
+        String sql = "SELECT B.BUILDING_ID, B.NAME AS BUILDING_NAME, PRICE, TR.LEVEL, STEPS " +
+                " FROM TOWN AS T "
                 + "JOIN BUILDING_TOWN_RELATION AS TR ON T.TOWN_ID = TR.TOWN_ID "
                 + "JOIN BUILDING AS B ON TR.BUILDING_ID = B.BUILDING_ID "
                 + "JOIN BUILDING_PROGRESS AS BP ON BP.BUILDING_ID = B.BUILDING_ID "
