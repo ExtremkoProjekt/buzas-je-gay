@@ -236,12 +236,14 @@ public class Main {
 
         if(BuildingStepRepository.count(town) > 0){
            BuildingStepRepository.updateSteps(town);
+           BuildingStepRepository.deleteIfDone(town);
         }
 
         if(ArmyStepRepository.count(town) > 0){
            ArmyStepRepository.updateSteps(town);
+           ArmyStepRepository.deleteIfDone(town);
         }
-
+        
         makeAISteps();
 
         town();
