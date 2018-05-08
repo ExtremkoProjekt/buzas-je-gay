@@ -32,10 +32,8 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         //DatabaseHandleTables.dropTables();
         DatabaseHandleTables.createTables();
-        BootstrapDB.initDatabase();
+
         reader = new Scanner(System.in);
-        //createPlayground();
-        // UserRepository.add("Janko", "map2.txt");
         
         rnd = new Random();
         mapCount = 2;
@@ -55,30 +53,35 @@ public class Main {
         String map_path = "";
         
         System.out.println();
-        
-        User player = UserRepository.getUserByName(username);
-        if(player == null){
-            // neexistuje ale existuje s ID 1
+
+        boolean player_exists = UserRepository.exists(username);
+
+        if (player_exists){
+            User player = UserRepository.getUserByName(username);
+            if (player.getUserID() == 1){ // nie computer
+                map_path = UserRepository.getMapByName(username);
+            }
+            else{
+                System.out.println("Zle meno!!! Zadajte vase prihlasovacie meno");
+                login();
+            }
+        }
+        else{
+            // player neexistuje
             if(UserRepository.userCount() > 0){
-                System.out.println("!!!ZLE MENO!!! NEEXISTA" ); 
+                System.out.println("Zle meno!!! Zadajte vase prihlasovacie meno");
                 login();
             }
             else{
-                // neexistuje - vytvor noveho
-                map_path = String.format("map%d.txt", 1 + rnd.nextInt(mapCount));
-                UserRepository.add(username, map_path);                 
+                // vytvor hraca s ID 1 - pouzivatela
+                map_path = "map1.txt";
+                UserRepository.add(username, map_path);
             }
-        }
-        else if (player.getUserID() == 1){
-            map_path = UserRepository.getMapByName(username);
-        }
-        else if (player.getUserID() != 1){
-            System.out.println("!!!ZLE MENO!!! EXISTA ALE ZLA" ); 
-            login();
         }
         
         // create graph        
-        pg.loadMap(map_path);        
+        pg.loadMap(map_path);
+        BootstrapDB.initDatabase();
         menu();
        
     }    
