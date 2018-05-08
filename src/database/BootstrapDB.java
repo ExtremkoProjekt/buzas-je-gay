@@ -12,6 +12,8 @@ import java.util.ArrayList;
  * @author MATEJ
  */
 public class BootstrapDB {
+
+
     
     private static void fillBuildings() throws SQLException, ClassNotFoundException {
         if (BuildingRepository.buildingCount() == 0) {
@@ -35,23 +37,22 @@ public class BootstrapDB {
 
         // [ KASARNE ]
         for(int i = 1; i <= numberOfLevels; i++){
-            row.add(new BuildingProgress(1, i, i * 15, i * i * 5, i - 1));
+            BuildingProgressRepository.insert(new BuildingProgress(1, i, i * 15, i * i * 5, i - 1));
         }
 
         // [ ZLATA BANA ]
         for(int i = 1; i <= numberOfLevels; i++){
-            row.add(new BuildingProgress(2, i, i * 25, i * 5, 2));
+            BuildingProgressRepository.insert(new BuildingProgress(2, i, i * 25, i * 5, 2));
         }
 
         // [ HLAVNA BUDOVA ]
         for(int i = 1; i <= numberOfLevels; i++){
             if (i == numberOfLevels){
-                row.add(new BuildingProgress(3, i, i * 20, 0, i - 1));
+                BuildingProgressRepository.insert(new BuildingProgress(3, i, i * 20, 0, i - 1));
             }
             else{ // ak je Hlavna budova == level 5, value zvys na 1 (inak 0)
-                row.add(new BuildingProgress(3, i, i * 20, 1, i - 1);
+                BuildingProgressRepository.insert(new BuildingProgress(3, i, i * 20, 1, i - 1);
             }
-
         }
     }    
     
