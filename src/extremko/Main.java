@@ -243,7 +243,7 @@ public class Main {
            ArmyStepRepository.updateSteps(town);
            ArmyStepRepository.deleteIfDone(town);
         }
-        
+
         makeAISteps();
 
         town();
@@ -254,6 +254,10 @@ public class Main {
 
         ArrayList<User> enemies  = UserRepository.getEnemies(user.getName());
         for (User enemy : enemies){
+            String enemy_town_name = TownRepository.getTownNameByUserID(enemy.getUserID());
+            Town enemy_town = TownRepository.getTownByName(enemy_town_name);
+            TownRepository.generateGold(enemy_town);
+
             //enemy.simulateAI();
         }
     }
