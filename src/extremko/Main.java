@@ -154,14 +154,12 @@ public class Main {
             if(building.getBuildingID() == building_id){
                 selected_building = building;
 
-                System.out.println(selected_building.getBuildingID() + " " + town.getTownID());
-
                 if(BuildingTownRelationRepository.canUpgradeBuilding(selected_building.getBuildingID(), town.getTownID())){
 
                     BuildingStepRepository.insert(selected_building, town);
 
                     System.out.println("Budova zaradena na vylepsenie");
-                    menu();
+                    town();
                 }
                 else{
                     System.out.println("Budova sa nedala vylepsit");
@@ -182,8 +180,8 @@ public class Main {
         }
         // TODO: ukaz nakup vojakov
 
-        System.out.print("Pocet vojakov v meste: " + town.getArmy() + ". Pocet zlata v meste: " + town.getGold());
-        System.out.println("Zadaj pocet vojakov na nakup:");
+        System.out.println("Pocet vojakov v meste: " + town.getArmy() + ". Pocet zlata v meste: " + town.getGold());
+        System.out.print("Zadaj pocet vojakov na nakup:");
         Scanner reader = new Scanner(System.in);
         int number_of_soldiers = reader.nextInt();
 
@@ -191,7 +189,7 @@ public class Main {
             TownRepository.updateArmy(town, number_of_soldiers);
             // TREBA DOKODIT AJ STRHNUTIE Z GOLDU
             System.out.println("Vojaci zaradeny na kupenie");
-            menu();
+            town();
         }
         else{
             System.out.println("Vojaci sa nedaju kupit");
@@ -206,11 +204,13 @@ public class Main {
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
-        User selected_enemy = choosen_enemy();
+        User selected_enemy = choosen_enemy("Utok");
 
         // TODO: pridaj na kolko krokov moze zautocit ?
         // TODO: najdi najkratsiu cestu
 
+
+        town();
     }
 
 
@@ -220,10 +220,12 @@ public class Main {
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
-        User selected_enemy = choosen_enemy();
+        User selected_enemy = choosen_enemy("Preberanie");
 
         // TODO: check hlavnu budovu ci je na full ak hej pridaj kroky
 
+
+        town();
     }
 
     public static void next_step() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
@@ -234,13 +236,17 @@ public class Main {
 
         if(BuildingStepRepository.count(town) > 0){
            BuildingStepRepository.updateSteps(town);
+           BuildingStepRepository.deleteIfDone(town);
         }
 
         if(ArmyStepRepository.count(town) > 0){
            ArmyStepRepository.updateSteps(town);
+           ArmyStepRepository.deleteIfDone(town);
         }
-
+        
         makeAISteps();
+
+        town();
 
     }
 
@@ -278,10 +284,10 @@ public class Main {
         town();
     }
     
-    public static User choosen_enemy() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
+    public static User choosen_enemy(String option) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
         Scanner reader = new Scanner(System.in); 
-        System.out.println("Protihraci");
+        System.out.println("Protihraci - " + option);
         System.out.println("--------------------------------------");
 
         ArrayList<User> enemies  = UserRepository.getEnemies(user.getName());
@@ -289,6 +295,8 @@ public class Main {
         for (User enemy : enemies){
             System.out.println(enemy.getUserID() +  " - " + enemy.getName());
         }
+
+        System.out.print("Vyber protihrada podla ID: ");
 
         int selected_enemy = reader.nextInt();
 
