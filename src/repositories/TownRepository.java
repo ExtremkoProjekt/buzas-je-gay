@@ -45,5 +45,18 @@ public class TownRepository {
         ResultSet rs = pstmt.executeQuery();
         rs.next();
         return rs.getInt("GOLD");   
-    }    
+    }
+
+    public static String getTownNameByUserID(int userID) throws ClassNotFoundException, SQLException {
+
+        Connection c = DatabaseConnection.getConnection();
+        PreparedStatement pstmt;
+        String sql = "SELECT NAME FROM TOWN WHERE USER_ID = ?;";
+
+        pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1, userID);
+        ResultSet rs = pstmt.executeQuery();
+        rs.next();
+        return rs.getString("NAME");
+    }
 }

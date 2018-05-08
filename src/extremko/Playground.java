@@ -55,21 +55,28 @@ public class Playground {
      */
     public void parseTowns(String input) throws ClassNotFoundException, SQLException{
         int ix = 1;
-        for (String s: input.split(" ")) {
-            towns.add(new Town(s));
-            if(ix > 1){
-                String name = "computer" + ix;
-                if(UserRepository.exists(name)) {
-                    ix++;
-                    name = "computer" + ix;
-                }
-                UserRepository.add(name);
-            }
 
-            // pridam mestu usera pre ix=1 user uz ecistuje
-            TownRepository.add(s, ix);
-            ix++;
-        }   
+        if (TownRepository.townCount() > 0){
+            towns = TownRepository.getTowns();
+        }
+        else {
+            for (String s : input.split(" ")) {
+                towns.add(new Town(s));
+                if (ix > 1) {
+                    String name = "computer" + ix;
+                    if (UserRepository.exists(name)) {
+                        ix++;
+                        name = "computer" + ix;
+                    }
+                    UserRepository.add(name);
+                }
+
+                // pridam mestu usera pre ix=1 user uz ecistuje
+                TownRepository.add(s, ix);
+                ix++;
+            }
+        }
+
     }
 
     /**

@@ -27,7 +27,8 @@ public class Main {
     static Random rnd;
     static int mapCount;
     static String username;
-    
+    static String town_name;
+
     //java -jar nazov.jar
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         //DatabaseHandleTables.dropTables();
@@ -87,42 +88,47 @@ public class Main {
     }    
     
     
-    public static void town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
+    public static void town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        System.out.println("Tvoje mesto");
+
+        //TODO: int goldAmount = TownRepository.get_gold_amount(town_name);
+        int goldAmount = 50;
+
+        System.out.println("Tvoje mesto " + town_name + ". Počet zlata: " + goldAmount);
         System.out.println("--------------------------------------");
         System.out.println("1 - navrat do menu"); 
-        System.out.println("2 - zoznam budov"); 
-        System.out.println("3 - pocet zlata"); 
+        System.out.println("2 - vylepsit budovu");
+        System.out.println("3 - postav armadu");
+        System.out.println("4 - zautoc na mesto");
+        System.out.println("5 - preber mesto");
         int n = reader.nextInt();
         if (n == 1) {
             menu();
         }
         else if(n == 2){
-            buildings();
+            upgrade_building();
         }
         else if(n == 3){
-            goldAmount();
-        }        
-    }   
-    
-    public static void goldAmount() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
-        clear();
-        //int goldAmount = TownRepository.get_gold_amount(townname);
-        int goldAmount = 50;
-        System.out.println("Počet zlata: " + goldAmount);
-        town();
+            build_army();
+        }
+        else if(n == 4){
+            attack_enemy();
+        }
+        else if(n == 5){
+            capture_enemy_town();
+        }
     }
-    
-    public static void buildings() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
+
+    public static void upgrade_building() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
         Scanner reader = new Scanner(System.in); 
         System.out.println("Budovy");
         System.out.println("--------------------------------------");
         
-        // TODO: vypis vo forcykle budovy a kolko stoji vylepsenie
-
-        ArrayList<String> options = BuildingRepository.printTownBuildings("a");
+        // TODO: zatial spravene pre jednu budovu - neskor si vyberie podla nazvu budovu - nazov budeme mat
+        int user_id = 1;
+        String user_town_name = TownRepository.getTownNameByUserID(user_id);
+        ArrayList<String> options = BuildingRepository.printTownBuildings(user_town_name); // TODO: user_town_name --> town_name
         
         int ix = 1;
         for (Iterator<String> i = options.iterator(); i.hasNext();) {
@@ -134,6 +140,7 @@ public class Main {
         
         // TODO: zacni vylepsovat budovu
         if (n == 1) {
+            // TODO: pozri ci ma dost zlata na vylepsenie na dany level
             System.out.println("VYLEPSUJEM BUDOVU: " + n);
             town();
         }
@@ -143,39 +150,73 @@ public class Main {
         }
         
         // TODO: daj stavat budovu na n tahov
-        
-        
+
+
         // TODO: vykonaj tahy UI
-        
+
         town();
     }
+
+    public static void build_army() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
+
+        // TODO: ukaz nakup vojakov
+
+    }
+
+    public static void attack_enemy() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
+        clear();
+        int enemy_id = enemy_list();
+
+        // TODO: pridaj na kolko krokov moze zautocit ?
+        // TODO: najdi najkratsiu cestu
+
+    }
+
+
+    public static void capture_enemy_town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
+        clear();
+        int enemy_id = enemy_list();
+
+        // TODO: check hlavnu budovu ci je na full ak hej pridaj kroky
+
+    }
+
+
     
     public static void menu() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        System.out.println("Menu");
+
+        // TODO: zobraz podla akutualneho poctu miest pouzivatela
+        System.out.println("Tvoje Mesta");
         System.out.println("--------------------------------------");
-        System.out.println("1 - Zobraz svoje mesto");
-        System.out.println("2 - Zobraz susedov"); 
-        int n = reader.nextInt();
-        
-        if (n == 1) {
-            town();
+//        System.out.println("1 - Zobraz svoje mesto");
+//        int n = reader.nextInt();
+
+        town_name = "a"; // TODO: zobraz podla akutualneho poctu miest pouzivatela
+
+        ArrayList<Town> user_towns = TownRepository.getTownsByUsername(username);
+
+        for (Town town : user_towns){
+            System.out.println(town.getTownID +  " - " + town.getName());
         }
-        else if (n == 2) {
-            neighbours();
-        }
+
+        town_name = reader.next();
+        town();
     }
     
-    public static void neighbours() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
+    public static int enemy_list() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
         Scanner reader = new Scanner(System.in); 
-        System.out.println("Susedia");
+        System.out.println("Protihraci");
         System.out.println("--------------------------------------");
-        System.out.println("1 - navrat do menu"); 
-        int n = reader.nextInt();
-        if (n == 1) {
-            menu();
+
+        ArrayList<User> enemies  = User.getEnemies(username);
+
+        for (User enemy : enemies){
+            System.out.println(enemy.getUserID() +  " - " + enemy.getName());
         }
+
+        return reader.nextInt();
     }    
     
     public static void createPlayground() throws IOException, FileNotFoundException, ClassNotFoundException, SQLException {
