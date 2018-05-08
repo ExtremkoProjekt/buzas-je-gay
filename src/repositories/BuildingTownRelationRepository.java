@@ -47,7 +47,7 @@ public class BuildingTownRelationRepository {
                 "JOIN BUILDING  AS B ON " +
                 "BTR.BUILDING_ID = B.BUILDING_ID " +
                 "JOIN BUILDING_PROGRESS AS BP ON BP.BUILDING_ID = B.BUILDING_ID " +
-                "WHERE T.TOWN_ID = ? AND B.BUILDING_ID = ? AND TR.LEVEL = BP.LEVEL";
+                "WHERE T.TOWN_ID = ? AND B.BUILDING_ID = ? AND BTR.LEVEL = BP.LEVEL";
 
         pstmt = c.prepareStatement(sql);
         pstmt.setInt(1, townId);
