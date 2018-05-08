@@ -84,6 +84,7 @@ public class TownRepository {
         PreparedStatement pstmt;
         String sql = "SELECT GOLD FROM TOWN WHERE TOWN_ID = ?";
         pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1, t.getTownID());
         ResultSet rs = pstmt.executeQuery();
         rs.next();
         int res = rs.getInt("GOLD");
@@ -128,12 +129,15 @@ public class TownRepository {
     public static int getGoldAmount(String townName) throws ClassNotFoundException, SQLException {
         Connection c = DatabaseConnection.getConnection();
         PreparedStatement pstmt;
-        String sql = "SELECT GOLD FROM TOWN WHERE NAME = ?;";
+        String sql = "SELECT GOLD FROM TOWN WHERE NAME = ?";
         pstmt = c.prepareStatement(sql);
         pstmt.setString(1, townName);
         ResultSet rs = pstmt.executeQuery();
         rs.next();
-        return rs.getInt("GOLD");   
+        int res = rs.getInt("GOLD");
+        rs.close();
+        pstmt.close();
+        return res;
     }
 
     public static String getTownNameByUserID(int userID) throws ClassNotFoundException, SQLException {
