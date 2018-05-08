@@ -19,7 +19,7 @@ public class DatabaseHandleTables {
         stmt = c.createStatement();
         String sql = "CREATE TABLE IF NOT EXISTS USER " +
                    "(USER_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "NAME TEXT, "
+                + "NAME TEXT UNIQUE, "
                 + "TEXTFILE TEXT"    
                 + ");";
         stmt.executeUpdate(sql);

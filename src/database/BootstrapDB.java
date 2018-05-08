@@ -2,6 +2,8 @@
 package database;
 
 import java.sql.SQLException;
+
+import repositories.BuildingTownRelationRepository;
 import repositories.BuildingRepository;
 
 /**
@@ -16,6 +18,12 @@ public class BootstrapDB {
             BuildingRepository.add("Zlata bana");
             BuildingRepository.add("Hlavna budova");
             
+        }
+    }
+
+    private static void fillBuildingProgress() throws SQLException, ClassNotFoundException {
+        if(BuildingTownRelationRepository.isEmpty()) {
+            BuildingTownRelationRepository.insert();
         }
     }
     
