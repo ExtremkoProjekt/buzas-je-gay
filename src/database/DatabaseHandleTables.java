@@ -27,6 +27,7 @@ public class DatabaseHandleTables {
                 "(TOWN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "NAME TEXT, "
                 + "GOLD INTEGER DEFAULT 50, "
+                + "ARMY INTEGER DEFAULT 0, "
                 + "USER_ID, "
                 + "FOREIGN KEY(USER_ID) REFERENCES USER(USER_ID)"
                 + ");";
@@ -49,8 +50,31 @@ public class DatabaseHandleTables {
                 "(TOWN_ID INTEGER, "
                 + "BUILDING_ID INTEGER, "
                 + "LEVEL INTEGER, "
-                + "FOREIGN KEY(BUILDING_ID) REFERENCES BUILDING(BUILDING_ID)"
+                + "FOREIGN KEY(BUILDING_ID) REFERENCES BUILDING(BUILDING_ID), "
                 + "FOREIGN KEY(TOWN_ID) REFERENCES TOWN(TOWN_ID)"
+                + ");";
+        stmt.executeUpdate(sql);
+        sql = "CREATE TABLE IF NOT EXISTS BUILDING_STEP " +
+                "(USER_ID INTEGER, "
+                + "TOWN_ID INTEGER, "
+                + "BUILDING_ID INTEGER, "
+                + "REMAINING_STEPS INTEGER, "
+                + "FOREIGN KEY(BUILDING_ID) REFERENCES BUILDING(BUILDING_ID), "
+                + "FOREIGN KEY(TOWN_ID) REFERENCES TOWN(TOWN_ID), " +
+                " FOREIGN KEY(USER_ID) REFERENCES USER(USER_ID)"
+                + ");";
+        stmt.executeUpdate(sql);
+        sql = "CREATE TABLE IF NOT EXISTS ARMY_STEP " +
+                "(USER_ID INTEGER, "
+                + "TOWN_ID INTEGER, "
+                + "OPONENT_USER_ID INTEGER, "
+                + "OPONENENT_TOWN_ID INTEGER, "
+                + "ARMY INTEGER, "
+                + "REMAINING_STEPS INTEGER, "
+                + "FOREIGN KEY(OPONENT_USER_ID) REFERENCES USER(USER_ID), "
+                + "FOREIGN KEY(OPONENENT_TOWN_ID) REFERENCES TOWN(TOWN_ID), "
+                + "FOREIGN KEY(TOWN_ID) REFERENCES TOWN(TOWN_ID), " +
+                " FOREIGN KEY(USER_ID) REFERENCES USER(USER_ID)"
                 + ");";
         stmt.executeUpdate(sql);
         stmt.close();

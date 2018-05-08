@@ -14,6 +14,7 @@ public class BootstrapDB {
         if (BuildingRepository.buildingCount() == 0) {
             BuildingRepository.add("Kasarne");
             BuildingRepository.add("Zlata bana");
+            BuildingRepository.add("Hlavna budova");
             
         }
     }
