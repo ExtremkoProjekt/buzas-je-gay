@@ -31,7 +31,11 @@ public class BuildingProgressRepository {
                 "VALUES (?, ?, ?, ?, ?)";
         PreparedStatement pstmt;
         pstmt = c.prepareStatement(sql);
-        //pstmt.setString(1, bp.g);
+        pstmt.setInt(1, bp.getId());
+        pstmt.setInt(2, bp.getLevel());
+        pstmt.setInt(3, bp.getPrice());
+        pstmt.setInt(4, bp.getValue());
+        pstmt.setInt(5, bp.getSteps());
         pstmt.executeUpdate();
         pstmt.close();
         c.commit();
