@@ -1,9 +1,9 @@
 # Strategická hra
 
-Jedná sa o ťahovú strategickú hru. Každá mapa obsahuje N miest, kde každé z týchto miest je pridelené jednému hráčovi (1 človek VS N-1 virtuálnych hráčov). Cieľom hry je vybudovať vojsko, s ktorým bude hráč postupne dobýjať okolité mestá. Každé mesto má 3 budovy:
+Jedná sa o ťahovú strategickú hru. Každá mapa obsahuje **N miest**, kde každé z týchto miest je pridelené jednému hráčovi (1 človek VS N-1 virtuálnych hráčov). Cieľom hry je vybudovať vojsko, s ktorým bude hráč postupne dobýjať okolité mestá. Každé mesto má **3 budovy**:
 
 ```
-Kasárne, Zlatú baňa, Hlavnú budova
+Kasárne, Zlatá baňa, Hlavnú budova
 ```
 
 ## Budovy
@@ -12,7 +12,7 @@ Kasárne, Zlatú baňa, Hlavnú budova
 * **Zlatá baňa:** slúži na ťažbu zlata
 * **Hlavná budova:** slúži na umožnenie dobytia mesta
 
-Hráč môže každú budovu vylepšovať, tie majú 5 úrovní vylepšenia. Pri spustení hry má každá budova úroveň 1 a ďalšie úrovne hráč odomyká zaplatením určitého obnosu zlata.
+Hráč môže každú budovu vylepšovať, tie majú **5 úrovní vylepšenia**. Pri spustení hry má každá budova úroveň 1 a ďalšie úrovne hráč odomyká zaplatením určitého obnosu zlata.
 
 ### Kasárne
 * **úroveň 1** – v jednom kroku dokáže kasáreň vyrobiť **max. 5 vojakov**
@@ -30,11 +30,11 @@ Hráč môže každú budovu vylepšovať, tie majú 5 úrovní vylepšenia. Pri
 
 ### Hlavná budova
 
-má rovnako možnosť vylepšenia na 5. úroveň. Po dosiahnutí 5. úrovne sa hráčovi povolí možnosť obsadiť protivníkove mestá.
+má rovnako možnosť vylepšenia na 5. úroveň. Po dosiahnutí 5. úrovne sa hráčovi **povolí možnosť obsadiť protivníkove mestá**.
 
 ## Financie
 
-Každý hráč dostáva na začiatku 50 zlatiek (50 G). Vylepšovanie budov a vyrábanie vojakov stojí určitý obnos G.
+Každý hráč dostáva na začiatku **50 zlatiek (50 G)**. Vylepšovanie budov a vyrábanie vojakov stojí určitý obnos G.
 
 ### Ceny
 
