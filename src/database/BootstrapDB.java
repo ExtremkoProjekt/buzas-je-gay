@@ -35,6 +35,12 @@ public class BootstrapDB {
 //            }
 //        }
 
+//        ArrayList pole = new ArrayList();
+//
+//        if(BuildingProgressRepository.isEmpty()) {
+//            BuildingProgressRepository.insert();
+//        }
+
 
     }    
     
