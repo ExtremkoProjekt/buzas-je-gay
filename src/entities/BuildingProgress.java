@@ -18,11 +18,7 @@ public class BuildingProgress {
     private int steps;
 
 
-    public BuildingProgress() {
-
-    }
-
-    public void setBuildingProgress(int id, int level, int price, int value, int steps) {
+    public BuildingProgress(int id, int level, int price, int value, int steps) {
         this.id = id;
         this.level = level;
         this.price = price;

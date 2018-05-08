@@ -124,16 +124,14 @@ public class Main {
         Scanner reader = new Scanner(System.in); 
         System.out.println("Budovy");
         System.out.println("--------------------------------------");
-        
-        // TODO: zatial spravene pre jednu budovu - neskor si vyberie podla nazvu budovu - nazov budeme mat
-        int user_id = 1;
-        String user_town_name = TownRepository.getTownNameByUserID(user_id);
-        ArrayList<String> options = BuildingRepository.printTownBuildings(user_town_name); // TODO: user_town_name --> town_name
+        System.out.println(town_name);
+
+        ArrayList<String> options = BuildingRepository.printTownBuildings(town_name);
         
         int ix = 1;
         for (Iterator<String> i = options.iterator(); i.hasNext();) {
             String buildInfo = i.next();
-            System.out.println(ix + " - " +buildInfo);
+            System.out.println(ix + " - " + buildInfo);
             ix++;
         }
         int n = reader.nextInt();
@@ -197,10 +195,17 @@ public class Main {
         ArrayList<Town> user_towns = TownRepository.getTownsByUsername(username);
 
         for (Town town : user_towns){
-            System.out.println(town.getTownID() +  " - " + town.getName());
+            System.out.println(town.getTownID() +  " - nazov mesta " + town.getName());
         }
 
-        town_name = reader.next();
+        int test_id = reader.nextInt();
+
+        for (Town town : user_towns){
+            if(town.getTownID() == test_id){
+                town_name = town.getName();
+                break;
+            }
+        }
         town();
     }
     

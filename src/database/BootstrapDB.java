@@ -2,15 +2,18 @@
 package database;
 
 import java.sql.SQLException;
-
+import entities.BuildingProgress;
 import repositories.BuildingTownRelationRepository;
 import repositories.BuildingRepository;
+import java.util.ArrayList;
 
 /**
  *
  * @author MATEJ
  */
 public class BootstrapDB {
+
+
     
     private static void fillBuildings() throws SQLException, ClassNotFoundException {
         if (BuildingRepository.buildingCount() == 0) {
@@ -29,19 +32,28 @@ public class BootstrapDB {
 
     private static void fillBuildingProgress() throws SQLException, ClassNotFoundException {
 
-//        for () data in pole ) {
-//            if(BuildingProgressRepository.isEmpty()) {
-//                BuildingProgressRepository.insert(data.level, data.value, data.staps ... );
-//            }
-//        }
+        int numberOfLevels = 5;
+        ArrayList<BuildingProgress> rows = new ArrayList<BuildingProgress>();
 
-//        ArrayList pole = new ArrayList();
-//
-//        if(BuildingProgressRepository.isEmpty()) {
-//            BuildingProgressRepository.insert();
-//        }
+        // [ KASARNE ]
+        for(int i = 1; i <= numberOfLevels; i++){
+            BuildingProgressRepository.insert(new BuildingProgress(1, i, i * 15, i * i * 5, i - 1));
+        }
 
+        // [ ZLATA BANA ]
+        for(int i = 1; i <= numberOfLevels; i++){
+            BuildingProgressRepository.insert(new BuildingProgress(2, i, i * 25, i * 5, 2));
+        }
 
+        // [ HLAVNA BUDOVA ]
+        for(int i = 1; i <= numberOfLevels; i++){
+            if (i == numberOfLevels){
+                BuildingProgressRepository.insert(new BuildingProgress(3, i, i * 20, 0, i - 1));
+            }
+            else{ // ak je Hlavna budova == level 5, value zvys na 1 (inak 0)
+                BuildingProgressRepository.insert(new BuildingProgress(3, i, i * 20, 1, i - 1);
+            }
+        }
     }    
     
     public static void initDatabase() throws SQLException, ClassNotFoundException {
