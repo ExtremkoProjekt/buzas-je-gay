@@ -37,4 +37,28 @@ public class BuildingTownRelationRepository {
         c.commit();
         c.setAutoCommit(true);
     }
+
+    public static boolean canUpgradeBuilding(int buildingId, int townId) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        PreparedStatement pstmt;
+        String sql = "SELECT GOLD, PRICE " +
+                "FROM TOWN AS T JOIN BUILDING_TOWN_RELATION AS BTR ON " +
+                "T.TOWN_ID = BTR.TOWN_ID " +
+                "JOIN BUILDING  AS B ON " +
+                "BTR.BUILDING_ID = B.BUILDING_ID " +
+                "JOIN BUILDING_PROGRESS AS BP ON BP.BUILDING_ID = B.BUILDING_ID " +
+                "WHERE T.TOWN_ID = ? AND B.BUILDING_ID = ? AND TR.LEVEL = BP.LEVEL";
+
+        pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1, townId);
+        pstmt.setInt(2, buildingId);
+        ResultSet rs = pstmt.executeQuery();
+        rs.next();
+        int gold = rs.getInt("GOLD");
+        int price = rs.getInt("PRICE");
+        rs.close();
+        pstmt.close();
+        return gold >= price;
+
+    }
 }

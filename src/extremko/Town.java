@@ -14,6 +14,10 @@ public class Town {
     private int userID;
     private int gold;
 
+
+    public Town() {
+    }
+
     public Town(String n) {
         neighbours = new ArrayList<Town>();
         name = n;

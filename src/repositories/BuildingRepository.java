@@ -16,7 +16,7 @@ public class BuildingRepository {
     public static void add(String name) throws ClassNotFoundException, SQLException {
         Connection c = DatabaseConnection.getConnection();
         c.setAutoCommit(false);
-        String sql = "INSERT INTO BUILDING (NAME) VALUES (?);"; 
+        String sql = "INSERT INTO BUILDING (NAME) VALUES (?);";
         PreparedStatement pstmt;
         pstmt = c.prepareStatement(sql);
         pstmt.setString(1, name);
@@ -74,6 +74,35 @@ public class BuildingRepository {
       pstmt.close();
       return buildings;
     }
+
+    public static ArrayList<Building> getTonwBuildingsWithRelations(String townName) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        PreparedStatement pstmt;
+        String sql = "SELECT B.BUILDING_ID, B.NAME AS BUILDING_NAME, PRICE, TR.LEVEL FROM TOWN AS T, STEPS "
+                + "JOIN BUILDING_TOWN_RELATION AS TR ON T.TOWN_ID = TR.TOWN_ID "
+                + "JOIN BUILDING AS B ON TR.BUILDING_ID = B.BUILDING_ID "
+                + "JOIN BUILDING_PROGRESS AS BP ON BP.BUILDING_ID = B.BUILDING_ID "
+                + "WHERE T.NAME = ? AND TR.LEVEL = BP.LEVEL";
+
+        pstmt = c.prepareStatement(sql);
+        pstmt.setString(1, townName);
+        ResultSet rs = pstmt.executeQuery();
+        ArrayList<Building> buildings = new ArrayList<>();
+        while (rs.next()) {
+            Building b = new Building(rs.getString("BUILDING_NAME"));
+            b.setBuildingID(rs.getInt("BUILDING_ID"));
+            b.setLevel(rs.getInt("LEVEL"));
+            b.setPrice(rs.getInt("PRICE"));
+            b.setSteps(rs.getInt("STEPS"));
+
+            buildings.add(b);
+        }
+        rs.close();
+        pstmt.close();
+        return buildings;
+    }
+
+
     
     
     public static int buildingCount() throws SQLException, ClassNotFoundException {
