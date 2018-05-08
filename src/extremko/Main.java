@@ -49,19 +49,17 @@ public class Main {
         System.out.print("Zadajte vaše meno: " );
         Scanner reader = new Scanner(System.in);
 
-        user = UserRepository.getUserByName(reader.next());
-        
         Playground pg = new Playground();
         String map_path = "";
-        
-        System.out.println();
 
-        boolean player_exists = UserRepository.exists(user.getName());
+        String username = reader.next();
+
+        boolean player_exists = UserRepository.exists(username);
 
         if (player_exists){
-            User player = UserRepository.getUserByName(user.getName());
-            if (player.getUserID() == 1){ // nie computer
-                map_path = UserRepository.getMapByName(user.getName());
+            user = UserRepository.getUserByName(username);
+            if (user.getUserID() == 1){ // nie computer
+                map_path = UserRepository.getMapByName(username);
             }
             else{
                 System.out.println("Zle meno!!! Zadajte vase prihlasovacie meno");
@@ -77,7 +75,9 @@ public class Main {
             else{
                 // vytvor hraca s ID 1 - pouzivatela
                 map_path = "map1.txt";
-                UserRepository.add(user.getName(), map_path);
+                UserRepository.add(username, map_path);
+
+                user = UserRepository.getUserByName(username);
             }
         }
         
@@ -100,6 +100,7 @@ public class Main {
         System.out.println("4 - zautoc na mesto");
         System.out.println("5 - preber mesto");
         System.out.println("6 - dalsi krok");
+        System.out.print("Tvoja moznost: ");
         int n = reader.nextInt();
         if (n == 1) {
             menu();
@@ -142,6 +143,8 @@ public class Main {
             System.out.println(building.getBuildingID() + " - BUDOVA: " +building.getName()+ " LEVEL: " + building.getLevel() + " VYLEPSIT ZA: " + building.getPrice()+ " ZLATA " + " ZA POCET KROKOV " +  building.getSteps());
         }
 
+        System.out.print("Zadaj ID budovy na vylepsienie: ");
+
         int building_id = reader.nextInt();
 
         //wtf nechapem kde toto inicializujes
@@ -151,6 +154,7 @@ public class Main {
             if(building.getBuildingID() == building_id){
                 selected_building = building;
 
+                System.out.println(selected_building.getBuildingID() + " " + town.getTownID());
 
                 if(BuildingTownRelationRepository.canUpgradeBuilding(selected_building.getBuildingID(), town.getTownID())){
 
@@ -167,9 +171,6 @@ public class Main {
                 break;
             }
         }
-
-
-
         town();
     }
 
@@ -182,7 +183,7 @@ public class Main {
         // TODO: ukaz nakup vojakov
 
         System.out.print("Pocet vojakov v meste: " + town.getArmy() + ". Pocet zlata v meste: " + town.getGold());
-        System.out.print("Zadaj pocet vojakov na nakup:");
+        System.out.println("Zadaj pocet vojakov na nakup:");
         Scanner reader = new Scanner(System.in);
         int number_of_soldiers = reader.nextInt();
 
@@ -256,7 +257,6 @@ public class Main {
     public static void menu() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
         System.out.println("Tvoje Mesta");
-        System.out.println("Vyber jedno mesto");
         System.out.println("--------------------------------------");
 
         ArrayList<Town> user_towns = TownRepository.getTownsByUsername(user.getName());
@@ -264,6 +264,9 @@ public class Main {
         for (Town town : user_towns){
             System.out.println(town.getTownID() +  " - mesto: " + town.getName());
         }
+
+        System.out.print("Vyber mesto podla ID: ");
+
         int test_id = reader.nextInt();
 
         for (Town t : user_towns){
