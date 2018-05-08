@@ -15,11 +15,23 @@ import repositories.UserRepository;
  */
 public class Playground {
     public ArrayList<Town> towns;
-    
+
+    /**
+     * Inicializacia arraylistu towns
+     * @throws IOException
+     */
     public Playground() throws IOException {
         towns = new ArrayList<Town>();
     }
-    
+
+    /**
+     * Otvori subor precita riadky a naplni graf
+     * @param path - txt subor
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public void loadMap(String path) throws FileNotFoundException, IOException, ClassNotFoundException, SQLException {
        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             //first line of text file contains all towns
@@ -31,18 +43,40 @@ public class Playground {
                 e.printStackTrace();
         }
     }
-    
+
+    /**
+     * Funckia robi viac veci - REFATOROVAT
+     *  - vytvori mesta
+     *  - prida mesto pouzivatelovi
+     *  - pre index > 1 (index 1 je clovek) vytvori AI hracov
+     * @param input - mesta oddelene medzerou
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public void parseTowns(String input) throws ClassNotFoundException, SQLException{
         int ix = 1;
         for (String s: input.split(" ")) {
             towns.add(new Town(s));
-//            if(ix > 1)
-//                UserRepository.add("computer" + ix);
-//            TownRepository.add(s, ix);
-//            ix++;
+            if(ix > 1){
+                String name = "computer" + ix;
+                if(UserRepository.exists(name)) {
+                    ix++;
+                    name = "computer" + ix;
+                }
+                UserRepository.add(name);
+            }
+
+            // pridam mestu usera pre ix=1 user uz ecistuje
+            TownRepository.add(s, ix);
+            ix++;
         }   
     }
-        
+
+    /**
+     * Prida mestam susedov
+     * @param br
+     * @throws IOException
+     */
     public void parseNeighbours(BufferedReader br) throws IOException{
         String line;
         while ((line = br.readLine()) != null) {
@@ -51,7 +85,12 @@ public class Playground {
                 getTownByName(pair[1]).addNeighbour(getTownByName(pair[0]));                                                       
         }
     }
-    
+
+    /**
+     * Nazov funkcie hovori za vsetko - mohlo by sa prerobit na DB call
+     * @param name
+     * @return
+     */
     private Town getTownByName(String name) {
         for (Town t: towns) {
             if (t.getName().equals(name)) return t;
