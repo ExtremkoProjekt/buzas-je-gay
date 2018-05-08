@@ -9,11 +9,54 @@ import java.util.ArrayList;
 public class Town {
     private ArrayList<Town> neighbours;
     private String name;
-    
+    private int townID;
+    private int army;
+    private int userID;
+    private int gold;
+
     public Town(String n) {
         neighbours = new ArrayList<Town>();
         name = n;
     }
+
+    public int getGold() {
+        return gold;
+    }
+
+    public void setGold(int gold) {
+        this.gold = gold;
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public int getArmy() {
+        return army;
+    }
+
+    public void setArmy(int army) {
+        this.army = army;
+    }
+
+
+
+
+
+    public int getTownID() {
+        return townID;
+    }
+
+    public void setTownID(int townID) {
+        this.townID = townID;
+    }
+
+
+
     
     public String getName() {
         return name;

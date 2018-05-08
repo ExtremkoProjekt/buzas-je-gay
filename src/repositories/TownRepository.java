@@ -1,10 +1,13 @@
 package repositories;
 
 import database.DatabaseConnection;
+import extremko.Town;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
@@ -60,5 +63,27 @@ public class TownRepository {
         rs.close();
         pstmt.close();
         return res;
+    }
+
+    public static ArrayList<Town> getTowns() throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        PreparedStatement pstmt;
+        String sql = "SELECT TOWN_ID, NAME, GOLD, ARMY, USER_ID " +
+                "FROM TOWN";
+
+        pstmt = c.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery();
+        ArrayList<Town> towns = new ArrayList<>();
+        while (rs.next()) {
+            Town t = new Town(rs.getString("NAME"));
+            t.setTownID(rs.getInt("TOWN_ID"));
+            t.setUserID(rs.getInt("USER_ID"));
+            t.setArmy(rs.getInt("ARMY"));
+            t.setGold(rs.getInt("GOLD"));
+            towns.add(t);
+        }
+        rs.close();
+        pstmt.close();
+        return towns;
     }
 }
