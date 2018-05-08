@@ -26,4 +26,18 @@ public class ArmyStepRepository {
         pstmt.close();
         return res;
     }
+
+    public static void updateSteps(Town t) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        c.setAutoCommit(false);
+        String sql = "UPDATE ARMY_STEP SET REMAINING_STEPS = REMAINING_STEPS - 1 " +
+                "WHERE USER_ID = ?;";
+        PreparedStatement pstmt;
+        pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1, t.getUserID());
+        pstmt.executeUpdate();
+        pstmt.close();
+        c.commit();
+        c.setAutoCommit(true);
+    }
 }

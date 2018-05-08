@@ -145,6 +145,7 @@ public class Main {
         }
 
         int building_id = reader.nextInt();
+
         //wtf nechapem kde toto inicializujes
         Building selected_building;
         for (Building building : buildings){
@@ -228,11 +229,11 @@ public class Main {
         TownRepository.generateGold(town);
 
         if(BuildingStepRepository.count(town) > 0){
-           BuildingStepRepository.updateSteps();
+           BuildingStepRepository.updateSteps(town);
         }
 
         if(ArmyStepRepository.count(town) > 0){
-           ArmyStepRepository.updateSteps();
+           ArmyStepRepository.updateSteps(town);
         }
 
         makeAISteps();
