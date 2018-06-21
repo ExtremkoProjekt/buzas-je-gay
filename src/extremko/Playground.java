@@ -56,6 +56,10 @@ public class Playground {
     public void parseTowns(String input) throws ClassNotFoundException, SQLException{
         int ix = 1;
 
+        if(input.equals("")){
+            return;
+        }
+
         if (TownRepository.townCount() > 0){
             towns = TownRepository.getTowns();
         }

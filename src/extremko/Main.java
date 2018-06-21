@@ -174,7 +174,7 @@ public class Main {
         }
         // TODO: ukaz nakup vojakov
 
-        System.out.println("Pocet vojakov v meste: " + town.getArmy() + ". Pocet zlata v meste: " + town.getGold());
+        System.out.println("Pocet vojakov v meste: " + town.getArmy() + ". Pocet zlata v meste: " + TownRepository.getGoldAmount(town.getName()));
         System.out.print("Zadaj pocet vojakov na nakup:");
         Scanner reader = new Scanner(System.in);
         int number_of_soldiers = reader.nextInt();
@@ -222,6 +222,8 @@ public class Main {
         User selected_enemy = choosen_enemy("Preberanie");
 
         // TODO: check hlavnu budovu ci je na full ak hej pridaj kroky
+        // TODO: vymysliet logiku na preberanie dediny
+        // TODO: navrh - hra sa skonci ked niekto preberie prvy dedinu
 
 
         town();
@@ -323,11 +325,17 @@ public class Main {
 
             int armyAmountToBuild = rnd.nextInt(50);
 
-            
+            if (TownRepository.canBuySoldiers(town, armyAmountToBuild)) {
+                ArmyStepRepository.insert(town,0,0,armyAmountToBuild,0);
+                TownRepository.subtractGold(town,armyAmountToBuild*2);
 
+            } else {
+                doStep(town);
+            }
         }
         else{
             // zautoc
+
 
         }
 
