@@ -2,9 +2,11 @@ package extremko;
 
 import database.BootstrapDB;
 import database.DatabaseHandleTables;
+import entities.ArmyStep;
 import entities.Building;
 import entities.BuildingStep;
 import entities.User;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,16 +17,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
+
 import repositories.*;
 
 /**
- *
  * @author MATEJ BUZAS
  */
 public class Main {
     private static Playground playground;
     private static Scanner reader;
-    
+
     static Random rnd;
     static int mapCount;
     static User user;
@@ -39,15 +41,15 @@ public class Main {
 
         rnd = new Random();
         mapCount = 2;
-        
+
         System.out.println("Vitajte v hre!");
         System.out.println("--------------------------------------");
         login();
     }
 
-    public static void login() throws IOException, InterruptedException, ClassNotFoundException, SQLException {  
+    public static void login() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        System.out.print("Zadajte vaše meno: " );
+        System.out.print("Zadajte vaše meno: ");
         Scanner reader = new Scanner(System.in);
 
         Playground pg = new Playground();
@@ -57,23 +59,20 @@ public class Main {
 
         boolean player_exists = UserRepository.exists(username);
 
-        if (player_exists){
+        if (player_exists) {
             user = UserRepository.getUserByName(username);
-            if (user.getUserID() == 1){ // nie computer
+            if (user.getUserID() == 1) { // nie computer
                 map_path = UserRepository.getMapByName(username);
-            }
-            else{
+            } else {
                 System.out.println("Zle meno!!! Zadajte vase prihlasovacie meno");
                 login();
             }
-        }
-        else{
+        } else {
             // player neexistuje
-            if(UserRepository.userCount() > 0){
+            if (UserRepository.userCount() > 0) {
                 System.out.println("Zle meno!!! Zadajte vase prihlasovacie meno");
                 login();
-            }
-            else{
+            } else {
                 // vytvor hraca s ID 1 - pouzivatela
                 map_path = "map1.txt";
                 UserRepository.add(username, map_path);
@@ -81,21 +80,21 @@ public class Main {
                 user = UserRepository.getUserByName(username);
             }
         }
-        
+
         // create graph        
         pg.loadMap(map_path);
         BootstrapDB.initDatabase();
         menu();
-    }    
-    
-    
+    }
+
+
     public static void town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
         int goldAmount = TownRepository.getGoldAmount(town.getName());
 
         System.out.println("Tvoje mesto " + town.getName() + ". Počet zlata: " + goldAmount);
         System.out.println("--------------------------------------");
-        System.out.println("1 - navrat do menu"); 
+        System.out.println("1 - navrat do menu");
         System.out.println("2 - vylepsit budovu");
         System.out.println("3 - postav armadu");
         System.out.println("4 - zautoc na mesto");
@@ -105,20 +104,15 @@ public class Main {
         int n = reader.nextInt();
         if (n == 1) {
             menu();
-        }
-        else if(n == 2){
+        } else if (n == 2) {
             upgrade_building();
-        }
-        else if(n == 3){
+        } else if (n == 3) {
             build_army();
-        }
-        else if(n == 4){
+        } else if (n == 4) {
             attack_enemy();
-        }
-        else if(n == 5){
+        } else if (n == 5) {
             capture_enemy_town();
-        }
-        else if(n == 6){
+        } else if (n == 6) {
             next_step();
         }
     }
@@ -131,18 +125,18 @@ public class Main {
     public static void upgrade_building() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
 
-        if (!can_make_step()){
+        if (!can_make_step()) {
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
-        Scanner reader = new Scanner(System.in); 
+        Scanner reader = new Scanner(System.in);
         System.out.println("Budovy");
         System.out.println("--------------------------------------");
 
         ArrayList<Building> buildings = BuildingRepository.getTonwBuildingsWithRelations(town.getName());
 
         for (Building building : buildings) {
-            System.out.println(building.getBuildingID() + " - BUDOVA: " +building.getName()+ " LEVEL: " + building.getLevel() + " VYLEPSIT ZA: " + building.getPrice()+ " ZLATA " + " ZA POCET KROKOV " +  building.getSteps());
+            System.out.println(building.getBuildingID() + " - BUDOVA: " + building.getName() + " LEVEL: " + building.getLevel() + " VYLEPSIT ZA: " + building.getPrice() + " ZLATA " + " ZA POCET KROKOV " + building.getSteps());
         }
 
         System.out.print("Zadaj ID budovy na vylepsienie: ");
@@ -152,18 +146,17 @@ public class Main {
         //wtf nechapem kde toto inicializujes
         Building selected_building;
 
-        for (Building building : buildings){
-            if(building.getBuildingID() == building_id){
+        for (Building building : buildings) {
+            if (building.getBuildingID() == building_id) {
                 selected_building = building;
 
-                if(BuildingTownRelationRepository.canUpgradeBuilding(selected_building.getBuildingID(), town.getTownID())){
+                if (BuildingTownRelationRepository.canUpgradeBuilding(selected_building.getBuildingID(), town.getTownID())) {
 
                     BuildingStepRepository.insert(selected_building, town);
 
                     System.out.println("Budova zaradena na vylepsenie");
                     town();
-                }
-                else{
+                } else {
                     System.out.println("Budova sa nedala vylepsit");
                     upgrade_building();
                 }
@@ -176,7 +169,7 @@ public class Main {
 
     public static void build_army() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        if (!can_make_step()){
+        if (!can_make_step()) {
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
@@ -187,13 +180,12 @@ public class Main {
         Scanner reader = new Scanner(System.in);
         int number_of_soldiers = reader.nextInt();
 
-        if(TownRepository.canBuySoldiers(town, number_of_soldiers)){
-            TownRepository.updateArmy(town, number_of_soldiers);
+        if (TownRepository.canBuySoldiers(town, number_of_soldiers)) {
+            // TownRepository.updateArmy(town, number_of_soldiers);
             // TREBA DOKODIT AJ STRHNUTIE Z GOLDU
             System.out.println("Vojaci zaradeny na kupenie");
             town();
-        }
-        else{
+        } else {
             System.out.println("Vojaci sa nedaju kupit");
             build_army();
         }
@@ -202,7 +194,7 @@ public class Main {
 
     public static void attack_enemy() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        if (!can_make_step()){
+        if (!can_make_step()) {
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
@@ -218,7 +210,7 @@ public class Main {
 
     public static void capture_enemy_town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        if (!can_make_step()){
+        if (!can_make_step()) {
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
@@ -236,17 +228,26 @@ public class Main {
 
         TownRepository.generateGold(town);
 
-        if(BuildingStepRepository.count(town) > 0){
+        if (BuildingStepRepository.count(town) > 0) {
             BuildingStep bs = BuildingStepRepository.selectBuildingStep(town);
             BuildingStepRepository.updateSteps(town);
-           if(BuildingStepRepository.deleteIfDone(town)){
-               BuildingTownRelationRepository.upgradeBuildingLevel(town, bs);
-           }
+            if (BuildingStepRepository.deleteIfDone(town)) {
+                BuildingTownRelationRepository.upgradeBuildingLevel(town, bs);
+            }
         }
 
-        if(ArmyStepRepository.count(town) > 0){
-           ArmyStepRepository.updateSteps(town);
-           ArmyStepRepository.deleteIfDone(town);
+        if (ArmyStepRepository.count(town) > 0) {
+            ArmyStep as = ArmyStepRepository.selectArmyStep(town);
+            ArmyStepRepository.updateSteps(town);
+            if (ArmyStepRepository.deleteIfDone(town)) {
+                if(as.getOponentUserID() == 0){
+                    // neutocim, vylepsijem vojakov
+                    TownRepository.updateArmy(town, as.getArmy());
+                }
+                else{
+                    // simuluj utocenie
+                }
+            }
         }
 
         makeAISteps();
@@ -257,8 +258,8 @@ public class Main {
 
     public static void makeAISteps() throws SQLException, ClassNotFoundException {
 
-        ArrayList<User> enemies  = UserRepository.getEnemies(user.getName());
-        for (User enemy : enemies){
+        ArrayList<User> enemies = UserRepository.getEnemies(user.getName());
+        for (User enemy : enemies) {
             String enemy_town_name = TownRepository.getTownNameByUserID(enemy.getUserID());
             Town enemy_town = TownRepository.getTownByName(enemy_town_name);
             TownRepository.generateGold(enemy_town);
@@ -268,7 +269,6 @@ public class Main {
     }
 
 
-    
     public static void menu() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
         System.out.println("Tvoje Mesta");
@@ -276,47 +276,47 @@ public class Main {
 
         ArrayList<Town> user_towns = TownRepository.getTownsByUsername(user.getName());
 
-        for (Town town : user_towns){
-            System.out.println(town.getTownID() +  " - mesto: " + town.getName());
+        for (Town town : user_towns) {
+            System.out.println(town.getTownID() + " - mesto: " + town.getName());
         }
 
         System.out.print("Vyber mesto podla ID: ");
 
         int test_id = reader.nextInt();
 
-        for (Town t : user_towns){
-            if(t.getTownID() == test_id){
+        for (Town t : user_towns) {
+            if (t.getTownID() == test_id) {
                 town = TownRepository.getTownByName(t.getName());
                 break;
             }
         }
         town();
     }
-    
+
     public static User choosen_enemy(String option) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        Scanner reader = new Scanner(System.in); 
+        Scanner reader = new Scanner(System.in);
         System.out.println("Protihraci - " + option);
         System.out.println("--------------------------------------");
 
-        ArrayList<User> enemies  = UserRepository.getEnemies(user.getName());
+        ArrayList<User> enemies = UserRepository.getEnemies(user.getName());
 
-        for (User enemy : enemies){
-            System.out.println(enemy.getUserID() +  " - " + enemy.getName());
+        for (User enemy : enemies) {
+            System.out.println(enemy.getUserID() + " - " + enemy.getName());
         }
 
         System.out.print("Vyber protihrada podla ID: ");
 
         int selected_enemy = reader.nextInt();
 
-        for (User enemy : enemies){
-            if(enemy.getUserID() == selected_enemy){
+        for (User enemy : enemies) {
+            if (enemy.getUserID() == selected_enemy) {
                 return enemy;
             }
         }
         return null;
     }
-    
+
     public static void clear() throws IOException, InterruptedException {
         new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
     }

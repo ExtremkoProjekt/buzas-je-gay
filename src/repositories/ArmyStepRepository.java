@@ -2,6 +2,7 @@ package repositories;
 
 import database.DatabaseConnection;
 import extremko.Town;
+import entities.ArmyStep;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,7 +28,7 @@ public class ArmyStepRepository {
         return res;
     }
 
-    public static void deleteIfDone(Town t) throws SQLException, ClassNotFoundException {
+    public static boolean deleteIfDone(Town t) throws SQLException, ClassNotFoundException {
         Connection c = DatabaseConnection.getConnection();
         c.setAutoCommit(false);
         String sql = "DELETE FROM ARMY_STEP WHERE REMAINING_STEPS = 0 " +
@@ -35,10 +36,14 @@ public class ArmyStepRepository {
         PreparedStatement pstmt;
         pstmt = c.prepareStatement(sql);
         pstmt.setInt(1, t.getTownID());
-        pstmt.executeUpdate();
+        int result = pstmt.executeUpdate();
         pstmt.close();
         c.commit();
         c.setAutoCommit(true);
+        if (result == 0){
+            return false;
+        }
+        return true;
     }
 
     public static void updateSteps(Town t) throws SQLException, ClassNotFoundException {
@@ -53,5 +58,31 @@ public class ArmyStepRepository {
         pstmt.close();
         c.commit();
         c.setAutoCommit(true);
+    }
+
+    public static ArmyStep selectArmyStep(Town town) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        c.setAutoCommit(false);
+        String sql = "SELECT * FROM ARMY_STEP " +
+                "WHERE USER_ID = ?;";
+        PreparedStatement pstmt;
+        pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1, town.getUserID());
+        ResultSet rs = pstmt.executeQuery();
+        ArmyStep as = null;
+        while (rs.next()) {
+            as = new ArmyStep();
+            as.setArmy(rs.getInt("ARMY"));
+            as.setOponentTownID(rs.getInt("OPONENT_USER_ID"));
+            as.setOponentUserID(rs.getInt("OPONENT_TOWN_ID"));
+            as.setRemainingSteps(rs.getInt("REMAINING_STEPS"));
+            as.setTownID(rs.getInt("TOWN_ID"));
+            as.setUserID(rs.getInt("USER_ID"));
+        }
+        pstmt.close();
+        c.commit();
+        c.setAutoCommit(true);
+        return as;
+
     }
 }
