@@ -3,6 +3,7 @@ package extremko;
 import database.BootstrapDB;
 import database.DatabaseHandleTables;
 import entities.Building;
+import entities.BuildingStep;
 import entities.User;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -123,6 +124,7 @@ public class Main {
     }
 
     public static boolean can_make_step() throws SQLException, ClassNotFoundException {
+        System.out.println(BuildingStepRepository.count(town) + " <- build | army -> " + ArmyStepRepository.count(town));
         return BuildingStepRepository.count(town) == 0 && ArmyStepRepository.count(town) == 0;
     }
 
@@ -235,8 +237,11 @@ public class Main {
         TownRepository.generateGold(town);
 
         if(BuildingStepRepository.count(town) > 0){
-           BuildingStepRepository.updateSteps(town);
-           BuildingStepRepository.deleteIfDone(town);
+            BuildingStep bs = BuildingStepRepository.selectBuildingStep(town);
+            BuildingStepRepository.updateSteps(town);
+           if(BuildingStepRepository.deleteIfDone(town)){
+               BuildingTownRelationRepository.upgradeBuildingLevel(town, bs);
+           }
         }
 
         if(ArmyStepRepository.count(town) > 0){
