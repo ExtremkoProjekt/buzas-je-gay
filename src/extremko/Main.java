@@ -154,6 +154,7 @@ public class Main {
 
                     BuildingStepRepository.insert(selected_building, town);
 
+                    TownRepository.subtractGold(town, selected_building.getPrice());
                     System.out.println("Budova zaradena na vylepsenie");
                     town();
                 } else {
@@ -231,20 +232,21 @@ public class Main {
         if (BuildingStepRepository.count(town) > 0) {
             BuildingStep bs = BuildingStepRepository.selectBuildingStep(town);
             BuildingStepRepository.updateSteps(town);
+
             if (BuildingStepRepository.deleteIfDone(town)) {
-                BuildingTownRelationRepository.upgradeBuildingLevel(town, bs);
+                BuildingTownRelationRepository.upgradeBuildingLevel(bs);
             }
+
         }
 
         if (ArmyStepRepository.count(town) > 0) {
             ArmyStep as = ArmyStepRepository.selectArmyStep(town);
             ArmyStepRepository.updateSteps(town);
             if (ArmyStepRepository.deleteIfDone(town)) {
-                if(as.getOponentUserID() == 0){
+                if (as.getOponentUserID() == 0) {
                     // neutocim, vylepsijem vojakov
                     TownRepository.updateArmy(town, as.getArmy());
-                }
-                else{
+                } else {
                     // simuluj utocenie
                 }
             }

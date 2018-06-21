@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BuildingProgressRepository {
 
@@ -41,5 +42,24 @@ public class BuildingProgressRepository {
         pstmt.close();
         c.commit();
         c.setAutoCommit(true);
+    }
+
+
+    public static int buildingMaxLevel(int building_id) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        String sql = "SELECT COUNT(level) AS maxLevel FROM BUILDING_PROGRESS WHERE building_id = ?;";
+        c.setAutoCommit(false);
+
+        PreparedStatement pstmt;
+        pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1,building_id);
+
+        ResultSet rs = pstmt.executeQuery();
+        int result = -1;
+        while(rs.next()){
+            result = rs.getInt("maxLevel");
+        }
+
+        return result;
     }
 }
