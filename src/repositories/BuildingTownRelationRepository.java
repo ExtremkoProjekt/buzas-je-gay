@@ -1,6 +1,9 @@
 package repositories;
 
 import database.DatabaseConnection;
+import entities.BuildingProgress;
+import entities.BuildingStep;
+import extremko.Town;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -61,4 +64,21 @@ public class BuildingTownRelationRepository {
         return gold >= price;
 
     }
+
+
+    public static void upgradeBuildingLevel(BuildingStep bs) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        c.setAutoCommit(false);
+        String sql = "update BUILDING_TOWN_RELATION set level = level + 1 where town_id = ? and building_id = ?;";
+        PreparedStatement pstmt;
+        pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1,bs.getTownID());
+        pstmt.setInt(2,bs.getBuildingID());
+        pstmt.executeUpdate();
+        pstmt.close();
+        c.commit();
+        c.setAutoCommit(true);
+    }
+
+
 }

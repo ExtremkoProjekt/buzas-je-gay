@@ -160,6 +160,7 @@ public class Main {
 
                     BuildingStepRepository.insert(selected_building, town);
 
+                    TownRepository.subtractGold(town,selected_building.getPrice());
                     System.out.println("Budova zaradena na vylepsenie");
                     town();
                 }
@@ -240,7 +241,7 @@ public class Main {
             BuildingStep bs = BuildingStepRepository.selectBuildingStep(town);
             BuildingStepRepository.updateSteps(town);
            if(BuildingStepRepository.deleteIfDone(town)){
-               BuildingTownRelationRepository.upgradeBuildingLevel(town, bs);
+               BuildingTownRelationRepository.upgradeBuildingLevel(bs);
            }
         }
 
