@@ -90,7 +90,7 @@ public class TownRepository {
         int res = rs.getInt("GOLD");
         rs.close();
         pstmt.close();
-        return res >= soldiers * 3; //cena za jedneho vojaka
+        return res >= soldiers * 2; //cena za jedneho vojaka
 
     }
 
@@ -135,6 +135,20 @@ public class TownRepository {
         ResultSet rs = pstmt.executeQuery();
         rs.next();
         int res = rs.getInt("GOLD");
+        rs.close();
+        pstmt.close();
+        return res;
+    }
+
+    public static int getArmyAmount(String townName) throws ClassNotFoundException, SQLException {
+        Connection c = DatabaseConnection.getConnection();
+        PreparedStatement pstmt;
+        String sql = "SELECT ARMY FROM TOWN WHERE NAME = ?";
+        pstmt = c.prepareStatement(sql);
+        pstmt.setString(1, townName);
+        ResultSet rs = pstmt.executeQuery();
+        rs.next();
+        int res = rs.getInt("ARMY");
         rs.close();
         pstmt.close();
         return res;

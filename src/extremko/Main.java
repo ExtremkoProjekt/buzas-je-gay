@@ -2,10 +2,7 @@ package extremko;
 
 import database.BootstrapDB;
 import database.DatabaseHandleTables;
-import entities.ArmyStep;
-import entities.Building;
-import entities.BuildingStep;
-import entities.User;
+import entities.*;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -13,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -92,7 +90,7 @@ public class Main {
         clear();
         int goldAmount = TownRepository.getGoldAmount(town.getName());
 
-        System.out.println("Tvoje mesto " + town.getName() + ". Počet zlata: " + goldAmount);
+        System.out.println("Tvoje mesto " + town.getName() + ". Počet zlata: " + goldAmount+ "Pocet vojakov: "+TownRepository.getArmyAmount(town.getName()));
         System.out.println("--------------------------------------");
         System.out.println("1 - navrat do menu");
         System.out.println("2 - vylepsit budovu");
@@ -159,7 +157,7 @@ public class Main {
                     town();
                 } else {
                     System.out.println("Budova sa nedala vylepsit");
-                    upgrade_building();
+                    //upgrade_building();
                 }
 
                 break;
@@ -185,7 +183,13 @@ public class Main {
             // TownRepository.updateArmy(town, number_of_soldiers);
             // TREBA DOKODIT AJ STRHNUTIE Z GOLDU
             System.out.println("Vojaci zaradeny na kupenie");
+
+            ArmyStepRepository.insert(town,0,0,number_of_soldiers,0);
+            TownRepository.subtractGold(town,number_of_soldiers*2);
             town();
+
+
+
         } else {
             System.out.println("Vojaci sa nedaju kupit");
             build_army();
@@ -241,14 +245,23 @@ public class Main {
 
         if (ArmyStepRepository.count(town) > 0) {
             ArmyStep as = ArmyStepRepository.selectArmyStep(town);
-            ArmyStepRepository.updateSteps(town);
-            if (ArmyStepRepository.deleteIfDone(town)) {
-                if (as.getOponentUserID() == 0) {
-                    // neutocim, vylepsijem vojakov
-                    TownRepository.updateArmy(town, as.getArmy());
-                } else {
-                    // simuluj utocenie
-                }
+            if (as.getOponentUserID() == 0) {
+                // neutocim, vylepsijem vojakov
+                int buildingLevel = BuildingTownRelationRepository.getBuildingLevel(town, BuildingProgress.KASAREN);
+                int maxArmy = BuildingProgressRepository.maxArmyPerLevel(BuildingProgress.KASAREN,buildingLevel);
+
+                int armyAmount = (as.getArmy() > maxArmy)? maxArmy : as.getArmy();
+
+                TownRepository.updateArmy(town, armyAmount);
+
+
+                //ArmyStepRepository.insert(town,as.getOponentUserID(),as.getOponentTownID(),as.getArmy()-armyAmount,0);
+                ArmyStepRepository.updateSteps(town,armyAmount);
+                ArmyStepRepository.deleteIfDone(town);
+
+
+            } else {
+                // simuluj utocenie
             }
         }
 

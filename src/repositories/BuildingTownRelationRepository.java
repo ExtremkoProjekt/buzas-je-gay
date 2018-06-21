@@ -81,4 +81,21 @@ public class BuildingTownRelationRepository {
     }
 
 
+    public static int getBuildingLevel(Town town, int building_id) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        PreparedStatement pstmt;
+        String sql = "select level from BUILDING_TOWN_RELATION where town_id = ? and building_id = ?;";
+
+        pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1,town.getTownID());
+        pstmt.setInt(2,building_id);
+        ResultSet rs = pstmt.executeQuery();
+
+        rs.next();
+        int level = rs.getInt("level");
+
+        rs.close();
+        pstmt.close();
+        return level;
+    }
 }

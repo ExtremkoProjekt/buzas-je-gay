@@ -62,4 +62,24 @@ public class BuildingProgressRepository {
 
         return result;
     }
+
+    public static int maxArmyPerLevel(int buildingType, int level) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        String sql = "select value from BUILDING_PROGRESS where building_id = ? and level = ?;";
+        c.setAutoCommit(false);
+
+        PreparedStatement pstmt;
+        pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1,buildingType);
+        pstmt.setInt(2,level);
+
+
+        ResultSet rs = pstmt.executeQuery();
+        int result = -1;
+        while(rs.next()){
+            result = rs.getInt("value");
+        }
+
+        return result;
+    }
 }

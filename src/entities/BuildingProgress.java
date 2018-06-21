@@ -17,6 +17,10 @@ public class BuildingProgress {
     private int value;
     private int steps;
 
+    public static final int KASAREN = 1;
+    public static final int ZLATA_BANA = 2;
+    public static final int HLAVNA_BUDOVA = 3;
+
 
     public BuildingProgress(int id, int level, int price, int value, int steps) {
         this.id = id;

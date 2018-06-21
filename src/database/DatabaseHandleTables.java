@@ -68,11 +68,11 @@ public class DatabaseHandleTables {
                 "(USER_ID INTEGER, "
                 + "TOWN_ID INTEGER, "
                 + "OPONENT_USER_ID INTEGER, "
-                + "OPONENENT_TOWN_ID INTEGER, "
+                + "OPONENT_TOWN_ID INTEGER, "
                 + "ARMY INTEGER, "
                 + "REMAINING_STEPS INTEGER, "
                 + "FOREIGN KEY(OPONENT_USER_ID) REFERENCES USER(USER_ID), "
-                + "FOREIGN KEY(OPONENENT_TOWN_ID) REFERENCES TOWN(TOWN_ID), "
+                + "FOREIGN KEY(OPONENT_TOWN_ID) REFERENCES TOWN(TOWN_ID), "
                 + "FOREIGN KEY(TOWN_ID) REFERENCES TOWN(TOWN_ID), " +
                 " FOREIGN KEY(USER_ID) REFERENCES USER(USER_ID)"
                 + ");";
