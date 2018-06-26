@@ -13,6 +13,8 @@ import java.util.Scanner;
 
 import repositories.*;
 
+import javax.sound.midi.Soundbank;
+
 /**
  * @author MATEJ BUZAS
  */
@@ -84,8 +86,30 @@ public class Main {
         clear();
         int goldAmount = TownRepository.getGoldAmount(town.getName());
 
+        BuildingStep buildingStep = BuildingStepRepository.selectBuildingStep(town);
+        if (buildingStep != null){
+            String buildingName = BuildingProgress.getTypeOfBuidling(buildingStep.getBuildingID());
+            int remainingSteps = buildingStep.getRemainingSteps();
+            System.out.println("Prave stavias "+buildingName+" a zostava ti "+remainingSteps+" krokov");
+        }
 
+        ArmyStep armyStep = ArmyStepRepository.selectArmyStep(town);
 
+        if(armyStep != null){
+            if(armyStep.getOponentUserID() == 0){
+                System.out.println("Momentalne narukujes "+armyStep.getArmy()+" vojakov");
+
+                int kasaren = BuildingTownRelationRepository.getBuildingLevel(town,BuildingProgress.KASAREN);
+
+                int maxArmy = BuildingProgressRepository.maxArmyPerLevel(BuildingProgress.KASAREN,kasaren);
+                System.out.println("V jednom kroku dokazes narukovat "+maxArmy);
+            }
+            else{
+
+                System.out.println("Utocis na mesto: "+TownRepository.getTownNameByUserID(armyStep.getOponentUserID())+" s "+armyStep.getArmy()+" vojakmi");
+
+            }
+        }
 
         System.out.println("Tvoje mesto " + town.getName() + ". Počet zlata: " + goldAmount+ " Pocet vojakov: "+TownRepository.getArmyAmount(town.getName()));
         System.out.println("--------------------------------------");

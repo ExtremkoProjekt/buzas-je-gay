@@ -69,4 +69,21 @@ public class BuildingProgress {
     public void setSteps(int steps) {
         this.steps = steps;
     }
+
+    public static String getTypeOfBuidling(int i){
+        switch (i){
+            case BuildingProgress.KASAREN:
+                return "KASAREN";
+
+            case BuildingProgress.ZLATA_BANA:
+                return "ZLATA_BANA";
+
+            case BuildingProgress.HLAVNA_BUDOVA:
+                return "HLAVNA_BUDOVA";
+
+            default:
+                return "NULL";
+
+        }
+    }
 }
