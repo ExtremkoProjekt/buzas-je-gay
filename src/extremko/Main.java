@@ -529,6 +529,7 @@ public class Main {
             System.out.println("Nemas tolko vojska... Zadaj pocet znovu");
             choosenArmyAmount();
         }
+
         return armyAmount;
 
     }
