@@ -20,6 +20,14 @@ public class Building {
     public Building() {
     }
 
+    public Building(int buildingID, String name, int level, int price, int steps) {
+        this.buildingID = buildingID;
+        this.name = name;
+        this.level = level;
+        this.price = price;
+        this.steps = steps;
+    }
+
     public int getLevel() {
         return level;
     }

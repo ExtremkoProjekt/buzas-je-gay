@@ -24,12 +24,12 @@ public class Main {
     static Random rnd;
     static int mapCount;
     static User user;
-    static Town town;
+    public static Town town;
 
     //java -jar nazov.jar
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
-        //DatabaseHandleTables.dropTables();
-        //DatabaseHandleTables.createTables();
+        DatabaseHandleTables.dropTables();
+        DatabaseHandleTables.createTables();
 
         reader = new Scanner(System.in);
 
