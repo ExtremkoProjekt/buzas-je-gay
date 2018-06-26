@@ -72,6 +72,7 @@ public class Main {
                 map_path = "map1.txt";
                 UserRepository.add(username, map_path);
                 user = UserRepository.getUserByName(username);
+
             }
         }
 
