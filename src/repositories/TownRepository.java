@@ -64,6 +64,20 @@ public class TownRepository {
         c.commit();
         c.setAutoCommit(true);
     }
+    public static void setArmy(Town t, int soldiers) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        c.setAutoCommit(false);
+        String sql = "UPDATE TOWN SET ARMY = ? " +
+                "WHERE TOWN_ID = ?;";
+        PreparedStatement pstmt;
+        pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1, soldiers);
+        pstmt.setInt(2, t.getTownID());
+        pstmt.executeUpdate();
+        pstmt.close();
+        c.commit();
+        c.setAutoCommit(true);
+    }
 
     public static void subtractArmy(Town t, int soldiers) throws SQLException, ClassNotFoundException {
         Connection c = DatabaseConnection.getConnection();

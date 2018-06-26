@@ -215,6 +215,8 @@ public class Main {
         Scanner reader = new Scanner(System.in);
         int number_of_soldiers = reader.nextInt();
 
+
+
         if (TownRepository.canBuySoldiers(town, number_of_soldiers)) {
             // TownRepository.updateArmy(town, number_of_soldiers);
             // TREBA DOKODIT AJ STRHNUTIE Z GOLDU
@@ -320,6 +322,7 @@ public class Main {
                     ArmyStep recordOfBattle = ArmyStepRepository.selectArmyStep(town);
 
                     int attackLevelOfArmy = BuildingTownRelationRepository.getBuildingLevel(town,BuildingProgress.KASAREN);
+                    int attackArmy = recordOfBattle.getArmy();
                     int attackArmyAmount = (int)Math.ceil(recordOfBattle.getArmy()*Math.sqrt((double)attackLevelOfArmy));
 
 
@@ -327,7 +330,8 @@ public class Main {
                     Town defendTown = TownRepository.getTownByName(defendTownName);
 
                     int defendLevelOfArmy  = BuildingTownRelationRepository.getBuildingLevel(defendTown,BuildingProgress.KASAREN);
-                    int defendArmyAmount = (int)Math.ceil(TownRepository.getArmyAmount(defendTownName)*Math.sqrt((double)defendLevelOfArmy));
+                    int defendArmy = TownRepository.getArmyAmount(defendTownName);
+                    int defendArmyAmount = (int)Math.ceil(defendArmy*Math.sqrt((double)defendLevelOfArmy));
 
 
                     int armyAfterBattle = attackArmyAmount - defendArmyAmount;
@@ -338,30 +342,31 @@ public class Main {
                         TownRepository.updateArmy(defendTown,-TownRepository.getArmyAmount(defendTownName));
                         System.out.println("Remizoval si boj s: " +defendTownName
                                 +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
-                                +"\nPocet jednotiek supera: "+TownRepository.getArmyAmount(defendTownName)
+                                +"\nPocet jednotiek supera: "+defendArmy
                                 +"\nVratilo sa ti: "+0+" jednotiek");
                     }
 
                     //VYHRA
                     else if(armyAfterBattle > 0){
                         TownRepository.updateArmy(town,(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy)));
-                        TownRepository.updateArmy(defendTown,-TownRepository.getArmyAmount(defendTownName));
+                        TownRepository.setArmy(defendTown,0);
                         System.out.println("Vyhral si boj s: " +defendTownName
                                 +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
-                                +"\nPocet jednotiek supera: "+TownRepository.getArmyAmount(defendTownName)
+                                +"\nPocet jednotiek supera: "+defendArmy
                                 +"\nVratilo sa ti: "+(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy))+" jednotiek");
                     }
 
                     //PREHRA
                     else{
-                        TownRepository.updateArmy(defendTown,-(int)Math.floor(armyAfterBattle/Math.sqrt((double)defendLevelOfArmy)));
+                        TownRepository.setArmy(defendTown,-(int)Math.floor(armyAfterBattle/Math.sqrt((double)defendLevelOfArmy)));
                         System.out.println("Prehral si boj s: " +defendTownName
                                 +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
-                                +"\nPocet jednotiek supera: "+TownRepository.getArmyAmount(defendTownName)
+                                +"\nPocet jednotiek supera: "+defendArmy
                                 +"\nVratilo sa ti: "+0+" jednotiek");
                     }
 
                     ArmyStepRepository.deleteIfDoneAttack(town);
+
 
                 }
 
