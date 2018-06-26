@@ -68,15 +68,10 @@ public class DummyTest {
     public void testAddUser() throws IOException, ClassNotFoundException, SQLException{
         assertEquals(0,UserRepository.userCount());
         UserRepository.add("stefan");
-
         assertEquals(true,UserRepository.exists("stefan"));
-
         assertEquals(1,UserRepository.userCount());
-
         UserRepository.add("stefann");
-
         assertEquals(true,UserRepository.exists("stefann"));
-
         assertEquals(2,UserRepository.userCount());
     }
 

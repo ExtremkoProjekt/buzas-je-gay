@@ -47,7 +47,7 @@ public class Main {
 
     public static void login() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        System.out.print("Zadajte vaše meno: ");
+        System.out.print(">> Zadajte vaše meno: ");
         Scanner reader = new Scanner(System.in);
 
         Playground pg = new Playground();
@@ -62,19 +62,18 @@ public class Main {
             if (user.getUserID() == 1) { // nie computer
                 map_path = UserRepository.getMapByName(username);
             } else {
-                System.out.println("Zle meno!!! Zadajte vase prihlasovacie meno");
+                System.out.println("(!!!) Zle meno! Musite zadat vase vase prihlasovacie meno.");
                 login();
             }
         } else {
             // player neexistuje
             if (UserRepository.userCount() > 0) {
-                System.out.println("Zle meno!!! Zadajte vase prihlasovacie meno");
+                System.out.println("(!!!) Zle meno! Musite zadat vase vase prihlasovacie meno");
                 login();
             } else {
                 // vytvor hraca s ID 1 - pouzivatela
                 map_path = "map1.txt";
                 UserRepository.add(username, map_path);
-
                 user = UserRepository.getUserByName(username);
             }
         }
@@ -90,7 +89,7 @@ public class Main {
         clear();
         int goldAmount = TownRepository.getGoldAmount(town.getName());
 
-        System.out.println("Tvoje mesto " + town.getName() + ". Počet zlata: " + goldAmount+ "Pocet vojakov: "+TownRepository.getArmyAmount(town.getName()));
+        System.out.println("Tvoje mesto " + town.getName() + ". Počet zlata: " + goldAmount+ " Pocet vojakov: "+TownRepository.getArmyAmount(town.getName()));
         System.out.println("--------------------------------------");
         System.out.println("1 - navrat do menu");
         System.out.println("2 - vylepsit budovu");
@@ -99,7 +98,18 @@ public class Main {
         System.out.println("5 - preber mesto");
         System.out.println("6 - dalsi krok");
         System.out.print("Tvoja moznost: ");
-        int n = reader.nextInt();
+
+        int n = -1;
+        reader = new Scanner(System.in);
+
+        try {
+            n = reader.nextInt();
+        }
+        catch (Exception e){
+            System.out.print("(!!!) Nezadali ste cislo - musite zadat cislo moznosti zo zoznamu. Vyberte moznost znova!\n");
+            menu();
+        }
+
         if (n == 1) {
             menu();
         } else if (n == 2) {
@@ -113,6 +123,10 @@ public class Main {
         } else if (n == 6) {
             next_step();
         }
+        else{
+            System.out.print("(!!!) Nezadali ste spravnu volbu - musite zadat cislo moznosti zo zoznamu. Vyberte moznost znova!\n");
+            town();
+        }
     }
 
     public static boolean can_make_step() throws SQLException, ClassNotFoundException {
@@ -124,7 +138,7 @@ public class Main {
         clear();
 
         if (!can_make_step()) {
-            System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
+            System.out.println(">> Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
         Scanner reader = new Scanner(System.in);
@@ -187,8 +201,6 @@ public class Main {
             ArmyStepRepository.insert(town,0,0,number_of_soldiers,0);
             TownRepository.subtractGold(town,number_of_soldiers*2);
             town();
-
-
 
         } else {
             System.out.println("Vojaci sa nedaju kupit");
@@ -341,11 +353,17 @@ public class Main {
 
     }
 
+    public static void printSeparator(){
+        System.out.println("--------------------------------------");
+    }
+
 
     public static void menu() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        System.out.println("Tvoje Mesta");
-        System.out.println("--------------------------------------");
+        System.out.println("Zoznam vasich miest:");
+        printSeparator();
+
+
 
         ArrayList<Town> user_towns = TownRepository.getTownsByUsername(user.getName());
 
@@ -353,17 +371,43 @@ public class Main {
             System.out.println(town.getTownID() + " - mesto: " + town.getName());
         }
 
-        System.out.print("Vyber mesto podla ID: ");
+        System.out.print(">> Vyberte mesto podla ID: ");
 
-        int test_id = reader.nextInt();
+
+        reader = new Scanner(System.in);
+        int test_id = -1;
+        boolean town_found = false;
+        boolean correct_input = false;
+
+        try {
+            test_id = reader.nextInt();
+            correct_input = true;
+        }
+        catch (Exception e){
+            System.out.print("(!!!) Nezadali ste cislo - musite zadat cislo mesta zo zoznamu. Vyberte mesto znova!\n");
+            menu();
+        }
+
+        if (!correct_input || test_id == -1){ // Ak pouzivatel zadal zly vstup, program nemoze pokracovat
+            return;
+        }
 
         for (Town t : user_towns) {
             if (t.getTownID() == test_id) {
                 town = TownRepository.getTownByName(t.getName());
+                town_found = true;
                 break;
             }
         }
-        town();
+        if (!town_found){
+            System.out.print("(!!!) Cislo, ktore site zadali, nezodpoveda ziadnemu tvojmu mestu. Vyberte mesto znova");
+            menu();
+
+        }else{
+            town();
+        }
+
+
     }
 
     public static User choosen_enemy(String option) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
@@ -391,8 +435,9 @@ public class Main {
     }
 
     public static void clear() throws IOException, InterruptedException {
-        new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        //new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
     }
+
 }
 
 

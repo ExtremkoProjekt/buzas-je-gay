@@ -75,7 +75,7 @@ public class Playground {
                     UserRepository.add(name);
                 }
 
-                // pridam mestu usera pre ix=1 user uz ecistuje
+                // pridam mestu usera pre ix=1 user uz existuje
                 TownRepository.add(s, ix);
                 ix++;
             }
