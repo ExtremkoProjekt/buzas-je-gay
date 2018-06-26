@@ -445,13 +445,11 @@ public class Main {
                                     +"\nPocet jednotiek supera: "+defendArmy
                                     +"\nVratilo sa vam: "+(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy))+" jednotiek");
                         }
-
                     }
 
                     //PREHRA
                     else{
                         TownRepository.setArmy(defendTown,-(int)Math.floor(armyAfterBattle/Math.sqrt((double)defendLevelOfArmy)));
-
 
                         if (as.getUserID()!=user.getUserID() && as.getOponentUserID()==user.getUserID()){
                             System.out.println("Zautocila na teba dedina: " +TownRepository.getTownNameByUserID(as.getUserID())+ " a vyhral si!"
@@ -464,8 +462,7 @@ public class Main {
                                     +"\nPocet jednotiek supera: "+defendArmy
                                     +"\nVratilo sa vam: "+0+" jednotiek");
                         }
-
-
+                        
                     }
 
                     ArmyStepRepository.deleteIfDoneAttack(town);

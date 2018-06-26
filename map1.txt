@@ -1,8 +1,8 @@
-a b c d e f g h
-a c
-a d
-d h
-h e
-e g
-g b
-d f
+Nitra Ruzomberok Snina Zilina Bratislava Kosice Trnava Piestany
+Nitra Snina
+Nitra Zilina
+Zilina Piestany
+Piestany Bratislava
+Bratislava Trnava
+Trnava Ruzomberok
+Zilina Kosice
