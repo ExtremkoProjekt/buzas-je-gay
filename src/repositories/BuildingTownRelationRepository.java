@@ -41,6 +41,25 @@ public class BuildingTownRelationRepository {
         c.setAutoCommit(true);
     }
 
+    public static int getLevelOfMainBuilding(int townId) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        PreparedStatement pstmt;
+        String sql = "SELECT LEVEL " +
+                "FROM BUILDING_TOWN_RELATION AS BTR " +
+                "JOIN BUILDING  AS B ON " +
+                "BTR.BUILDING_ID = B.BUILDING_ID " +
+                "WHERE TOWN_ID = ? AND B.NAME = 'Hlavna budova';";
+
+        pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1, townId);
+        ResultSet rs = pstmt.executeQuery();
+        rs.next();
+        int lvl = rs.getInt("LEVEL");
+        rs.close();
+        pstmt.close();
+        return lvl;
+    }
+
     public static boolean canUpgradeBuilding(int buildingId, int townId) throws SQLException, ClassNotFoundException {
         Connection c = DatabaseConnection.getConnection();
         PreparedStatement pstmt;
