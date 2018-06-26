@@ -173,6 +173,8 @@ public class TownRepository {
         pstmt.close();
         return town;
     }
+
+
      
     public static boolean exists(String name) throws ClassNotFoundException, SQLException {
         Connection c = DatabaseConnection.getConnection();
