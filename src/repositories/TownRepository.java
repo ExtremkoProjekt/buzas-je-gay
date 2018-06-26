@@ -106,7 +106,7 @@ public class TownRepository {
         int res = rs.getInt("GOLD");
         rs.close();
         pstmt.close();
-        return res >= soldiers * 2; //cena za jedneho vojaka
+        return res >= soldiers * 5; //cena za jedneho vojaka
 
     }
 

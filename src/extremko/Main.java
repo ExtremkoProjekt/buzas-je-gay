@@ -27,7 +27,7 @@ public class Main {
 
     //java -jar nazov.jar
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
-        //DatabaseHandleTables.dropTables();
+        DatabaseHandleTables.dropTables();
         DatabaseHandleTables.createTables();
 
         reader = new Scanner(System.in);
@@ -83,6 +83,9 @@ public class Main {
     public static void town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
         int goldAmount = TownRepository.getGoldAmount(town.getName());
+
+
+
 
         System.out.println("Tvoje mesto " + town.getName() + ". Počet zlata: " + goldAmount+ " Pocet vojakov: "+TownRepository.getArmyAmount(town.getName()));
         System.out.println("--------------------------------------");
@@ -193,7 +196,7 @@ public class Main {
             System.out.println("Vojaci zaradeny na kupenie");
 
             ArmyStepRepository.insert(town,0,0,number_of_soldiers,0);
-            TownRepository.subtractGold(town,number_of_soldiers*2);
+            TownRepository.subtractGold(town,number_of_soldiers*5);
             town();
 
         } else {
