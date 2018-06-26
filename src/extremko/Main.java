@@ -193,7 +193,7 @@ public class Main {
             System.out.println("Vojaci zaradeny na kupenie");
 
             ArmyStepRepository.insert(town,0,0,number_of_soldiers,0);
-            TownRepository.subtractGold(town,number_of_soldiers*2);
+            TownRepository.subtractGold(town,number_of_soldiers*5);
             town();
 
         } else {
@@ -244,7 +244,6 @@ public class Main {
         // TODO: vymysliet logiku na preberanie dediny
         // TODO: navrh - hra sa skonci ked niekto preberie prvy dedinu
 
-
         town();
     }
 
@@ -271,7 +270,6 @@ public class Main {
             if (BuildingStepRepository.deleteIfDone(town)) {
                 BuildingTownRelationRepository.upgradeBuildingLevel(bs);
             }
-
         }
 
         if (ArmyStepRepository.count(town) > 0) {
@@ -312,10 +310,6 @@ public class Main {
                     int armyAfterBattle = attackArmyAmount - defendArmyAmount;
 
 
-
-
-
-
                     //REMIZA
                     if (armyAfterBattle == 0){
 
@@ -325,9 +319,8 @@ public class Main {
                                 +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
                                 +"\nPocet jednotiek obrany: "+TownRepository.getArmyAmount(defendTownName)
                                 +"\nVratilo sa ti: "+0+" jednotiek");
-
-
                     }
+
                     //VYHRA
                     else if(armyAfterBattle > 0){
                         TownRepository.updateArmy(town,(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy)));
@@ -336,9 +329,8 @@ public class Main {
                                 +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
                                 +"\nPocet jednotiek obrany: "+TownRepository.getArmyAmount(defendTownName)
                                 +"\nVratilo sa ti: "+(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy))+" jednotiek");
-
-
                     }
+
                     //PREHRA
                     else{
                         TownRepository.updateArmy(town,-recordOfBattle.getArmy());
@@ -350,13 +342,6 @@ public class Main {
                     }
 
                     ArmyStepRepository.deleteIfDoneAttack(town);
-
-
-
-
-
-
-
 
                 }
 
