@@ -97,12 +97,12 @@ public class Main {
 
         if(armyStep != null){
             if(armyStep.getOponentUserID() == 0){
-                System.out.println("Momentalne narukujes "+armyStep.getArmy()+" vojakov");
+                System.out.println("Momentalne narukuje "+armyStep.getArmy()+" vojakov");
 
                 int kasaren = BuildingTownRelationRepository.getBuildingLevel(town,BuildingProgress.KASAREN);
 
                 int maxArmy = BuildingProgressRepository.maxArmyPerLevel(BuildingProgress.KASAREN,kasaren);
-                System.out.println("V jednom kroku dokazes narukovat "+maxArmy);
+                System.out.println("V jednom kroku dokaze narukovat "+maxArmy);
             }
             else{
 
@@ -335,11 +335,11 @@ public class Main {
                     //REMIZA
                     if (armyAfterBattle == 0){
 
-                        TownRepository.updateArmy(town,-recordOfBattle.getArmy());
+                        //TownRepository.updateArmy(town,-recordOfBattle.getArmy());
                         TownRepository.updateArmy(defendTown,-TownRepository.getArmyAmount(defendTownName));
                         System.out.println("Remizoval si boj s: " +defendTownName
                                 +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
-                                +"\nPocet jednotiek obrany: "+TownRepository.getArmyAmount(defendTownName)
+                                +"\nPocet jednotiek supera: "+TownRepository.getArmyAmount(defendTownName)
                                 +"\nVratilo sa ti: "+0+" jednotiek");
                     }
 
@@ -349,17 +349,17 @@ public class Main {
                         TownRepository.updateArmy(defendTown,-TownRepository.getArmyAmount(defendTownName));
                         System.out.println("Vyhral si boj s: " +defendTownName
                                 +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
-                                +"\nPocet jednotiek obrany: "+TownRepository.getArmyAmount(defendTownName)
+                                +"\nPocet jednotiek supera: "+TownRepository.getArmyAmount(defendTownName)
                                 +"\nVratilo sa ti: "+(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy))+" jednotiek");
                     }
 
                     //PREHRA
                     else{
-                        TownRepository.updateArmy(town,-recordOfBattle.getArmy());
+                        //TownRepository.updateArmy(town,-recordOfBattle.getArmy());
                         TownRepository.updateArmy(defendTown,-(int)Math.floor(armyAfterBattle/Math.sqrt((double)defendLevelOfArmy)));
                         System.out.println("Prehral si boj s: " +defendTownName
                                 +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
-                                +"\nPocet jednotiek obrany: "+TownRepository.getArmyAmount(defendTownName)
+                                +"\nPocet jednotiek supera: "+TownRepository.getArmyAmount(defendTownName)
                                 +"\nVratilo sa ti: "+0+" jednotiek");
                     }
 
