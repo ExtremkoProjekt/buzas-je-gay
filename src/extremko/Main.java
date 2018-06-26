@@ -210,27 +210,16 @@ public class Main {
             town();
         }
         User selected_enemy = choosenEnemy("Utok");
-
-
             int armyAmount = choosenArmyAmount();
-
             String town_name = TownRepository.getTownNameByUserID(selected_enemy.getUserID());
             Town oponentTown = TownRepository.getTownByName(town_name);
-
             ArmyStepRepository.insert(town,oponentTown.getUserID(),oponentTown.getTownID(),armyAmount,5);
             TownRepository.subtractArmy(town,armyAmount);
             town();
-
-
-
-
         // TODO: pridaj na kolko krokov moze zautocit ?
         // TODO: najdi najkratsiu cestu
-
-
         town();
     }
-
 
     public static void capture_enemy_town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
@@ -238,11 +227,17 @@ public class Main {
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
-        User selected_enemy = choosenEnemy("Preberanie");
+        else if (BuildingTownRelationRepository.getLevelOfMainBuilding(town.getTownID()) != 1) { //vratit na 5
+            System.out.println("Este nemozete preberat cudzie mesta!");
+            town();
+        }
+        else {
+            User selected_enemy = choosenEnemy("Preberanie");
+            int armyAmount = choosenArmyAmount();
 
-        // TODO: check hlavnu budovu ci je na full ak hej pridaj kroky
-        // TODO: vymysliet logiku na preberanie dediny
-        // TODO: navrh - hra sa skonci ked niekto preberie prvy dedinu
+        }
+
+
 
 
         town();
