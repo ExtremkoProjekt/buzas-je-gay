@@ -38,11 +38,12 @@ public class TownRepository {
         "JOIN BUILDING AS B ON BTR.BUILDING_ID = B.BUILDING_ID " +
         "JOIN BUILDING_PROGRESS BP ON B.BUILDING_ID = BP.BUILDING_ID " +
         "AND BP.LEVEL = BTR.LEVEL " +
-        "WHERE T.TOWN_ID = ?)";
+        "WHERE T.TOWN_ID = ? AND B.NAME = 'Zlata bana')" +
+                " WHERE TOWN_ID = ?";
         PreparedStatement pstmt;
         pstmt = c.prepareStatement(sql);
         pstmt.setInt(1, t.getTownID());
-
+        pstmt.setInt(2, t.getTownID());
         pstmt.executeUpdate();
         pstmt.close();
         c.commit();
