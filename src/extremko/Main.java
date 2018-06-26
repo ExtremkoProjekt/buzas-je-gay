@@ -371,13 +371,14 @@ public class Main {
     public static void makeAISteps() throws SQLException, ClassNotFoundException {
 
         ArrayList<User> enemies = UserRepository.getEnemies(user.getName());
+
         for (User enemy : enemies) {
             String enemy_town_name = TownRepository.getTownNameByUserID(enemy.getUserID());
             Town enemy_town = TownRepository.getTownByName(enemy_town_name);
             TownRepository.generateGold(enemy_town);
-
             simulateAI(enemy.getUserID(), rnd.nextInt(3));
         }
+
     }
 
     public static void simulateAI(int enemyID, int option) throws SQLException, ClassNotFoundException {
