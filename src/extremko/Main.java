@@ -169,7 +169,7 @@ public class Main {
         }
         // TODO: ukaz nakup vojakov
 
-        System.out.println("Pocet vojakov v meste: " + town.getArmy() + ". Pocet zlata v meste: " + town.getGold());
+        System.out.println("Pocet vojakov v meste: " + town.getArmy() + ". Pocet zlata v meste: " + TownRepository.getGoldAmount(town.getName()));
         System.out.print("Zadaj pocet vojakov na nakup:");
         Scanner reader = new Scanner(System.in);
         int number_of_soldiers = reader.nextInt();
@@ -230,6 +230,8 @@ public class Main {
         User selected_enemy = choosenEnemy("Preberanie");
 
         // TODO: check hlavnu budovu ci je na full ak hej pridaj kroky
+        // TODO: vymysliet logiku na preberanie dediny
+        // TODO: navrh - hra sa skonci ked niekto preberie prvy dedinu
 
 
         town();
@@ -240,6 +242,16 @@ public class Main {
         // TODO: obnova zlata, zmena remianing steps, vykonaj AI
 
         TownRepository.generateGold(town);
+
+        doStep(town);
+
+        makeAISteps();
+
+        town();
+
+    }
+
+    public static void doStep(Town town) throws ClassNotFoundException, SQLException {
 
         if (BuildingStepRepository.count(town) > 0) {
             BuildingStep bs = BuildingStepRepository.selectBuildingStep(town);
@@ -340,11 +352,6 @@ public class Main {
                 // simuluj utocenie
             }
         }
-
-        makeAISteps();
-
-        town();
-
     }
 
     public static void makeAISteps() throws SQLException, ClassNotFoundException {
@@ -355,8 +362,59 @@ public class Main {
             Town enemy_town = TownRepository.getTownByName(enemy_town_name);
             TownRepository.generateGold(enemy_town);
 
-            //enemy.simulateAI();
+            simulateAI(enemy.getUserID(), rnd.nextInt(3));
         }
+    }
+
+    public static void simulateAI(int enemyID, int option) throws SQLException, ClassNotFoundException {
+
+        if(option == 0){
+            // vylepsi budovu
+            String townName = TownRepository.getTownNameByUserID(enemyID);
+            Town town = TownRepository.getTownByName(townName);
+            ArrayList<Building> buildings = BuildingRepository.getTonwBuildingsWithRelations(townName);
+
+            int buildingIDToUpgrade = rnd.nextInt(buildings.size());
+            Building selected_building;
+
+            for (Building building : buildings) {
+                if (building.getBuildingID() == buildingIDToUpgrade) {
+                    selected_building = building;
+
+                    if (BuildingTownRelationRepository.canUpgradeBuilding(selected_building.getBuildingID(), town.getTownID())) {
+
+                        BuildingStepRepository.insert(selected_building, town);
+                        TownRepository.subtractGold(town, selected_building.getPrice());
+                    } else {
+                        doStep(town);
+                    }
+
+                    break;
+                }
+            }
+
+
+        }else if (option == 1){
+            // postav vojsko
+            String townName = TownRepository.getTownNameByUserID(enemyID);
+            Town town = TownRepository.getTownByName(townName);
+
+            int armyAmountToBuild = rnd.nextInt(50);
+
+            if (TownRepository.canBuySoldiers(town, armyAmountToBuild)) {
+                ArmyStepRepository.insert(town,0,0,armyAmountToBuild,0);
+                TownRepository.subtractGold(town,armyAmountToBuild*2);
+
+            } else {
+                doStep(town);
+            }
+        }
+        else{
+            // zautoc
+
+
+        }
+
     }
 
 

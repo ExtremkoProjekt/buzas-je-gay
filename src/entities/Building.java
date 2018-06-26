@@ -17,6 +17,9 @@ public class Building {
         name = n;
     }
 
+    public Building() {
+    }
+
     public int getLevel() {
         return level;
     }
