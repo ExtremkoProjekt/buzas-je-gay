@@ -46,6 +46,24 @@ public class ArmyStepRepository {
         return true;
     }
 
+    public static boolean deleteIfDoneAttack(Town t) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        c.setAutoCommit(false);
+        String sql = "DELETE FROM ARMY_STEP WHERE REMAINING_STEPS = 0 " +
+                "AND TOWN_ID = ?";
+        PreparedStatement pstmt;
+        pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1, t.getTownID());
+        int result = pstmt.executeUpdate();
+        pstmt.close();
+        c.commit();
+        c.setAutoCommit(true);
+        if (result == 0){
+            return false;
+        }
+        return true;
+    }
+
     public static void updateSteps(Town t, int armyAmount) throws SQLException, ClassNotFoundException {
         Connection c = DatabaseConnection.getConnection();
         c.setAutoCommit(false);
@@ -105,5 +123,19 @@ public class ArmyStepRepository {
         c.commit();
         c.setAutoCommit(true);
 
+    }
+
+    public static void updateAttackSteps(Town town) throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        c.setAutoCommit(false);
+        String sql = "UPDATE ARMY_STEP SET REMAINING_STEPS = REMAINING_STEPS - 1 " +
+                "WHERE USER_ID = ?;";
+        PreparedStatement pstmt;
+        pstmt = c.prepareStatement(sql);
+        pstmt.setInt(1, town.getUserID());
+        pstmt.executeUpdate();
+        pstmt.close();
+        c.commit();
+        c.setAutoCommit(true);
     }
 }

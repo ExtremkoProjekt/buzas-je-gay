@@ -77,6 +77,8 @@ public class DatabaseHandleTables {
                 " FOREIGN KEY(USER_ID) REFERENCES USER(USER_ID)"
                 + ");";
         stmt.executeUpdate(sql);
+
+
         stmt.close();
         c.commit();         
     }

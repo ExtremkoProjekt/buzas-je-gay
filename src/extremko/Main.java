@@ -4,15 +4,10 @@ import database.BootstrapDB;
 import database.DatabaseHandleTables;
 import entities.*;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.SQLException;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -117,7 +112,7 @@ public class Main {
         } else if (n == 3) {
             build_army();
         } else if (n == 4) {
-            attack_enemy();
+            attackEnemy();
         } else if (n == 5) {
             capture_enemy_town();
         } else if (n == 6) {
@@ -209,13 +204,26 @@ public class Main {
 
     }
 
-    public static void attack_enemy() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
+    public static void attackEnemy() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
         if (!can_make_step()) {
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
-        User selected_enemy = choosen_enemy("Utok");
+        User selected_enemy = choosenEnemy("Utok");
+
+
+            int armyAmount = choosenArmyAmount();
+
+            String town_name = TownRepository.getTownNameByUserID(selected_enemy.getUserID());
+            Town oponentTown = TownRepository.getTownByName(town_name);
+
+            ArmyStepRepository.insert(town,oponentTown.getUserID(),oponentTown.getTownID(),armyAmount,5);
+            TownRepository.subtractArmy(town,armyAmount);
+            town();
+
+
+
 
         // TODO: pridaj na kolko krokov moze zautocit ?
         // TODO: najdi najkratsiu cestu
@@ -231,7 +239,7 @@ public class Main {
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
-        User selected_enemy = choosen_enemy("Preberanie");
+        User selected_enemy = choosenEnemy("Preberanie");
 
         // TODO: check hlavnu budovu ci je na full ak hej pridaj kroky
         // TODO: vymysliet logiku na preberanie dediny
@@ -285,6 +293,74 @@ public class Main {
 
 
             } else {
+                if(as.getRemainingSteps() > 0){
+                    ArmyStepRepository.updateAttackSteps(town);
+                }
+                else{
+                    ArmyStep recordOfBattle = ArmyStepRepository.selectArmyStep(town);
+
+                    int attackLevelOfArmy = BuildingTownRelationRepository.getBuildingLevel(town,BuildingProgress.KASAREN);
+                    int attackArmyAmount = (int)Math.ceil(recordOfBattle.getArmy()*Math.sqrt((double)attackLevelOfArmy));
+
+
+                    String defendTownName = TownRepository.getTownNameByUserID(recordOfBattle.getOponentUserID());
+                    Town defendTown = TownRepository.getTownByName(defendTownName);
+
+                    int defendLevelOfArmy  = BuildingTownRelationRepository.getBuildingLevel(defendTown,BuildingProgress.KASAREN);
+                    int defendArmyAmount = (int)Math.ceil(TownRepository.getArmyAmount(defendTownName)*Math.sqrt((double)defendLevelOfArmy));
+
+
+                    int armyAfterBattle = attackArmyAmount - defendArmyAmount;
+
+
+
+
+
+
+                    //REMIZA
+                    if (armyAfterBattle == 0){
+
+                        TownRepository.updateArmy(town,-recordOfBattle.getArmy());
+                        TownRepository.updateArmy(defendTown,-TownRepository.getArmyAmount(defendTownName));
+                        System.out.println("Remizoval si boj s: " +defendTownName
+                                +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
+                                +"\nPocet jednotiek obrany: "+TownRepository.getArmyAmount(defendTownName)
+                                +"\nVratilo sa ti: "+0+" jednotiek");
+
+
+                    }
+                    //VYHRA
+                    else if(armyAfterBattle > 0){
+                        TownRepository.updateArmy(town,(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy)));
+                        TownRepository.updateArmy(defendTown,-TownRepository.getArmyAmount(defendTownName));
+                        System.out.println("Vyhral si boj s: " +defendTownName
+                                +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
+                                +"\nPocet jednotiek obrany: "+TownRepository.getArmyAmount(defendTownName)
+                                +"\nVratilo sa ti: "+(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy))+" jednotiek");
+
+
+                    }
+                    //PREHRA
+                    else{
+                        TownRepository.updateArmy(town,-recordOfBattle.getArmy());
+                        TownRepository.updateArmy(defendTown,-(int)Math.floor(armyAfterBattle/Math.sqrt((double)defendLevelOfArmy)));
+                        System.out.println("Prehral si boj s: " +defendTownName
+                                +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
+                                +"\nPocet jednotiek obrany: "+TownRepository.getArmyAmount(defendTownName)
+                                +"\nVratilo sa ti: "+0+" jednotiek");
+                    }
+
+                    ArmyStepRepository.deleteIfDoneAttack(town);
+
+
+
+
+
+
+
+
+                }
+
                 // simuluj utocenie
             }
         }
@@ -410,7 +486,7 @@ public class Main {
 
     }
 
-    public static User choosen_enemy(String option) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
+    public static User choosenEnemy(String option) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
         Scanner reader = new Scanner(System.in);
         System.out.println("Protihraci - " + option);
@@ -432,6 +508,22 @@ public class Main {
             }
         }
         return null;
+    }
+
+    public static int choosenArmyAmount() throws IOException, InterruptedException, SQLException, ClassNotFoundException {
+        clear();
+        Scanner reader = new Scanner(System.in);
+        int townArmy = TownRepository.getArmyAmount(town.getName());
+        System.out.println("K dispozicii mas "+townArmy+" vojakov");
+        System.out.println("Zadaj pocet vojakov na utok: ");
+        int armyAmount = reader.nextInt();
+
+        if ( townArmy < armyAmount){
+            System.out.println("Nemas tolko vojska... Zadaj pocet znovu");
+            choosenArmyAmount();
+        }
+        return armyAmount;
+
     }
 
     public static void clear() throws IOException, InterruptedException {
