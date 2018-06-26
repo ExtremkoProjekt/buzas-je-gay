@@ -144,7 +144,7 @@ public class Main {
         } else if (n == 4) {
             attackEnemy();
         } else if (n == 5) {
-            capture_enemy_town();
+            captureEnemyTown();
         } else if (n == 9) {
             next_step();
         } else if (n == 999) {
@@ -310,21 +310,26 @@ public class Main {
         // TODO: najdi najkratsiu cestu
     }
 
-    public static void capture_enemy_town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
+    public static void captureEnemyTown() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
 
         printMainSeparator();
         if (!canMakeStep()) {
             System.out.println("Uz ste vykonali akciu, prejdite na dalsi krok");
             town();
+            return;
         }
         else if (BuildingTownRelationRepository.getBuildingLevel(town,BuildingProgress.HLAVNA_BUDOVA)<5) { //vratit na 5
             System.out.println("Este nemozete preberat cudzie mesta!");
             town();
+            return;
         }
         else {
             User selected_enemy = choosenEnemy("Preberanie");
-            int armyAmount = choosenArmyAmount();
+            if (selected_enemy != null){
+                int armyAmount = choosenArmyAmount();
+            }
+
 
         }
 

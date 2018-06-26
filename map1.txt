@@ -1,6 +1,6 @@
-a b c d e f g h
-a c
-a d
+Melek b c d e f g h
+Melek c
+Melek d
 d h
 h e
 e g
