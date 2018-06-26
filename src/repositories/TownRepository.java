@@ -64,6 +64,34 @@ public class TownRepository {
         c.commit();
         c.setAutoCommit(true);
     }
+
+    public static void GoldCheat() throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        c.setAutoCommit(false);
+        String sql = "UPDATE TOWN SET GOLD = 100000 " +
+                "WHERE TOWN_ID = 1;";
+        PreparedStatement pstmt;
+        pstmt = c.prepareStatement(sql);
+        pstmt.executeUpdate();
+        pstmt.close();
+        c.commit();
+        c.setAutoCommit(true);
+    }
+
+    public static void ArmyCheat() throws SQLException, ClassNotFoundException {
+        Connection c = DatabaseConnection.getConnection();
+        c.setAutoCommit(false);
+        String sql = "UPDATE TOWN SET ARMY = 100000 " +
+                "WHERE TOWN_ID = 1;";
+        PreparedStatement pstmt;
+        pstmt = c.prepareStatement(sql);
+        pstmt.executeUpdate();
+        pstmt.close();
+        c.commit();
+        c.setAutoCommit(true);
+    }
+
+
     public static void setArmy(Town t, int soldiers) throws SQLException, ClassNotFoundException {
         Connection c = DatabaseConnection.getConnection();
         c.setAutoCommit(false);
