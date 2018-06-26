@@ -237,27 +237,16 @@ public class Main {
             town();
         }
         User selected_enemy = choosenEnemy("Utok");
-
-
             int armyAmount = choosenArmyAmount();
-
             String town_name = TownRepository.getTownNameByUserID(selected_enemy.getUserID());
             Town oponentTown = TownRepository.getTownByName(town_name);
-
             ArmyStepRepository.insert(town,oponentTown.getUserID(),oponentTown.getTownID(),armyAmount,5);
             TownRepository.subtractArmy(town,armyAmount);
             town();
-
-
-
-
         // TODO: pridaj na kolko krokov moze zautocit ?
         // TODO: najdi najkratsiu cestu
-
-
         town();
     }
-
 
     public static void capture_enemy_town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
@@ -265,11 +254,16 @@ public class Main {
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
-        User selected_enemy = choosenEnemy("Preberanie");
+        else if (BuildingTownRelationRepository.getLevelOfMainBuilding(town.getTownID()) != 1) { //vratit na 5
+            System.out.println("Este nemozete preberat cudzie mesta!");
+            town();
+        }
+        else {
+            User selected_enemy = choosenEnemy("Preberanie");
+            int armyAmount = choosenArmyAmount();
 
-        // TODO: check hlavnu budovu ci je na full ak hej pridaj kroky
-        // TODO: vymysliet logiku na preberanie dediny
-        // TODO: navrh - hra sa skonci ked niekto preberie prvy dedinu
+        }
+
 
 
         town();
@@ -298,7 +292,6 @@ public class Main {
             if (BuildingStepRepository.deleteIfDone(town)) {
                 BuildingTownRelationRepository.upgradeBuildingLevel(bs);
             }
-
         }
 
         if (ArmyStepRepository.count(town) > 0) {
@@ -339,10 +332,6 @@ public class Main {
                     int armyAfterBattle = attackArmyAmount - defendArmyAmount;
 
 
-
-
-
-
                     //REMIZA
                     if (armyAfterBattle == 0){
 
@@ -352,9 +341,8 @@ public class Main {
                                 +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
                                 +"\nPocet jednotiek obrany: "+TownRepository.getArmyAmount(defendTownName)
                                 +"\nVratilo sa ti: "+0+" jednotiek");
-
-
                     }
+
                     //VYHRA
                     else if(armyAfterBattle > 0){
                         TownRepository.updateArmy(town,(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy)));
@@ -363,9 +351,8 @@ public class Main {
                                 +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
                                 +"\nPocet jednotiek obrany: "+TownRepository.getArmyAmount(defendTownName)
                                 +"\nVratilo sa ti: "+(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy))+" jednotiek");
-
-
                     }
+
                     //PREHRA
                     else{
                         TownRepository.updateArmy(town,-recordOfBattle.getArmy());
@@ -377,13 +364,6 @@ public class Main {
                     }
 
                     ArmyStepRepository.deleteIfDoneAttack(town);
-
-
-
-
-
-
-
 
                 }
 
