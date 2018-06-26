@@ -202,6 +202,7 @@ public class Main {
             return;
         }
 
+        boolean isBuildingSelected = false;
 
         Building selected_building;
 
@@ -220,20 +221,25 @@ public class Main {
                     System.out.println("Budova sa nedala vylepsit");
                     //upgrade_building();
                 }
-
+                isBuildingSelected = true;
                 break;
             }
+        }
+
+        if(isBuildingSelected){
+            upgrade_building();
+        }
+        else{
             if (building_id == 9){
                 town();
                 return;
             }
             else{
-                System.out.println("(!!!) Zadali ste zlu moznost! Vyberte spravnu moznost zo zoznamu.");
-                break;
+                System.out.println("(!!!) Zadali ste zlu moznost! Musite vybrat spravnu moznost zo zoznamu.");
+                town();
+                return;
             }
         }
-
-        upgrade_building();
     }
 
     public static void build_army() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
