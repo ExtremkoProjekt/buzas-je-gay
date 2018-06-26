@@ -92,7 +92,7 @@ public class DummyTest {
     }
 
     //----------------------------------------
-    
+
     @Test
     public void testBuildingProgress() throws IOException, ClassNotFoundException, SQLException{
         BuildingProgress bp = new BuildingProgress(1, 1, 10, 5, 1);
