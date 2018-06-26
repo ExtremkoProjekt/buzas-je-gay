@@ -214,6 +214,8 @@ public class Main {
         Scanner reader = new Scanner(System.in);
         int number_of_soldiers = reader.nextInt();
 
+
+
         if (TownRepository.canBuySoldiers(town, number_of_soldiers)) {
             // TownRepository.updateArmy(town, number_of_soldiers);
             // TREBA DOKODIT AJ STRHNUTIE Z GOLDU
