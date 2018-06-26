@@ -256,7 +256,7 @@ public class Main {
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
-        else if (BuildingTownRelationRepository.getLevelOfMainBuilding(town.getTownID()) != 1) { //vratit na 5
+        else if (BuildingTownRelationRepository.getBuildingLevel(town,BuildingProgress.HLAVNA_BUDOVA)<5) { //vratit na 5
             System.out.println("Este nemozete preberat cudzie mesta!");
             town();
         }
@@ -498,6 +498,8 @@ public class Main {
     public static void printSeparator(){
         System.out.println("--------------------------------------");
     }
+
+
 
 
     public static void menu() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
