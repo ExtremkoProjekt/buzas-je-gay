@@ -150,7 +150,6 @@ public class Main {
 
         int building_id = reader.nextInt();
 
-        //wtf nechapem kde toto inicializujes
         Building selected_building;
 
         for (Building building : buildings) {

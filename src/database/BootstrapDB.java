@@ -44,7 +44,7 @@ public class BootstrapDB {
 
             // [ ZLATA BANA ]
             for (int i = 1; i <= numberOfLevels; i++) {
-                BuildingProgressRepository.insert(new BuildingProgress(2, i, i * 25, i * 5, 2));
+                BuildingProgressRepository.insert(new BuildingProgress(2, i, i * 25, i * 2, 2));
             }
 
             // [ HLAVNA BUDOVA ]
