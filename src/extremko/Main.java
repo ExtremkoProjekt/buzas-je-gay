@@ -57,13 +57,13 @@ public class Main {
             if (user.getUserID() == 1) { // nie computer
                 map_path = UserRepository.getMapByName(username);
             } else {
-                System.out.println("(!!!) Zle meno! Musite zadat vase vase prihlasovacie meno.");
+                System.out.println("(!!!) Zle meno! Musite zadat vase prihlasovacie meno.");
                 login();
             }
         } else {
             // player neexistuje
             if (UserRepository.userCount() > 0) {
-                System.out.println("(!!!) Zle meno! Musite zadat vase vase prihlasovacie meno");
+                System.out.println("(!!!) Zle meno! Musite zadat vase prihlasovacie meno");
                 login();
             } else {
                 // vytvor hraca s ID 1 - pouzivatela
@@ -150,7 +150,6 @@ public class Main {
 
         int building_id = reader.nextInt();
 
-        //wtf nechapem kde toto inicializujes
         Building selected_building;
 
         for (Building building : buildings) {
