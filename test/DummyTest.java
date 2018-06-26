@@ -4,11 +4,13 @@ import database.BootstrapDB;
 import database.DatabaseHandleTables;
 import entities.Building;
 import entities.User;
+import extremko.Main;
 import extremko.Playground;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import extremko.Town;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -46,6 +48,7 @@ public class DummyTest {
     public void tearDown() {
     }
 
+
     @Test
     public void testLoadTown() throws IOException, ClassNotFoundException, SQLException{
         DatabaseHandleTables.dropTables();
@@ -61,6 +64,7 @@ public class DummyTest {
         Playground pg = new Playground();
         pg.parseTowns("a");
         assertEquals(1, pg.towns.size());
+
     }
 
 
@@ -100,13 +104,13 @@ public class DummyTest {
     public void testBuildingsCount() throws IOException, ClassNotFoundException, SQLException{
 
 
-        assertEquals(0,BuildingRepository.buildingCount());
+        assertEquals(3,BuildingRepository.buildingCount());
 
         BuildingRepository.add("Kasarne");
 
-        assertEquals(1,BuildingRepository.buildingCount());
+        assertEquals(4,BuildingRepository.buildingCount());
 
-        //DatabaseHandleTables.dropTables();
+
     }
 
 
@@ -120,6 +124,48 @@ public class DummyTest {
         assertEquals(false,BuildingTownRelationRepository.isEmpty());
     }
     */
+
+
+    @Test
+    public void testMakeStepsTrue() throws SQLException, ClassNotFoundException {
+        Town t = new Town();
+        t.setUserID(1);
+        t.setTownID(1);
+        t.setGold(50);
+        t.setArmy(0);
+        Main.town = t;
+        Building b = new Building(1,"Kasaren",1,15,1);
+        assertEquals(true,Main.canMakeStep());
+    }
+
+    @Test
+    public void testMakeStepsFalse() throws SQLException, ClassNotFoundException {
+        Town t = new Town();
+        t.setUserID(1);
+        t.setTownID(1);
+        t.setGold(50);
+        t.setArmy(0);
+        Main.town = t;
+        Building b = new Building(1,"Kasaren",1,15,1);
+        BuildingStepRepository.insert(b,t);
+        assertEquals(false,Main.canMakeStep());
+    }
+
+    @Test
+    public void testFinal() throws IOException, SQLException, ClassNotFoundException {
+        Playground pg = new Playground();
+        String map_path = "map1.txt";
+        String username = "matej";
+        UserRepository.add(username, map_path);
+
+        User user = UserRepository.getUserByName(username);
+
+        BootstrapDB.initDatabase();
+
+        assertEquals(true,UserRepository.exists(username));
+
+    }
+
 
 
 
