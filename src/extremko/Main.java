@@ -37,13 +37,14 @@ public class Main {
         rnd = new Random();
         mapCount = 2;
 
-        System.out.println("Vitajte v hre!");
-        System.out.println("--------------------------------------");
+        System.out.println("Vitajte v hre!\n");
+
         login();
     }
 
     public static void login() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
+        printMainSeparator();
         System.out.print(">> Zadajte vaše meno: ");
         Scanner reader = new Scanner(System.in);
 
@@ -84,13 +85,14 @@ public class Main {
 
     public static void town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
+        printMainSeparator();
         int goldAmount = TownRepository.getGoldAmount(town.getName());
 
         BuildingStep buildingStep = BuildingStepRepository.selectBuildingStep(town);
         if (buildingStep != null){
             String buildingName = BuildingProgress.getTypeOfBuidling(buildingStep.getBuildingID());
             int remainingSteps = buildingStep.getRemainingSteps();
-            System.out.println("Prave stavias "+buildingName+" a zostava ti "+remainingSteps+" krokov");
+            System.out.println("Prave staviate "+buildingName+" a zostava vam "+remainingSteps+" krokov");
         }
 
         ArmyStep armyStep = ArmyStepRepository.selectArmyStep(town);
@@ -102,24 +104,24 @@ public class Main {
                 int kasaren = BuildingTownRelationRepository.getBuildingLevel(town,BuildingProgress.KASAREN);
 
                 int maxArmy = BuildingProgressRepository.maxArmyPerLevel(BuildingProgress.KASAREN,kasaren);
-                System.out.println("V jednom kroku dokaze narukovat "+maxArmy);
+                System.out.println("V jednom kroku dokaze narukovat naraz "+maxArmy);
             }
             else{
 
-                System.out.println("Utocis na mesto: "+TownRepository.getTownNameByUserID(armyStep.getOponentUserID())+" s "+armyStep.getArmy()+" vojakmi");
+                System.out.println("Utocite na mesto: "+TownRepository.getTownNameByUserID(armyStep.getOponentUserID())+" s "+armyStep.getArmy()+" vojakmi");
 
             }
         }
 
-        System.out.println("Tvoje mesto " + town.getName() + ". Počet zlata: " + goldAmount+ " Pocet vojakov: "+TownRepository.getArmyAmount(town.getName()));
+        System.out.println("Vase mesto '" + town.getName() + "' | Počet zlata: " + goldAmount+ " | Pocet vojakov: "+TownRepository.getArmyAmount(town.getName()));
         System.out.println("--------------------------------------");
-        System.out.println("1 - navrat do menu");
-        System.out.println("2 - vylepsit budovu");
-        System.out.println("3 - postav armadu");
-        System.out.println("4 - zautoc na mesto");
-        System.out.println("5 - preber mesto");
-        System.out.println("6 - dalsi krok");
-        System.out.print("Tvoja moznost: ");
+        System.out.println("1 - Navrat do menu (vyber mesta)");
+        System.out.println("2 - Vylepsit budovu");
+        System.out.println("3 - Postav armadu");
+        System.out.println("4 - Zautoc na mesto");
+        System.out.println("5 - Preber mesto");
+        System.out.println("9 - Dalsi krok");
+        System.out.print(">> Vasa moznost: ");
 
         int n = -1;
         reader = new Scanner(System.in);
@@ -128,8 +130,9 @@ public class Main {
             n = reader.nextInt();
         }
         catch (Exception e){
-            System.out.print("(!!!) Nezadali ste cislo - musite zadat cislo moznosti zo zoznamu. Vyberte moznost znova!\n");
-            menu();
+            System.out.println("(!!!) Nezadali ste cislo - musite zadat cislo moznosti zo zoznamu. Vyberte moznost znova!");
+            town();
+            return;
         }
 
         if (n == 1) {
@@ -142,8 +145,16 @@ public class Main {
             attackEnemy();
         } else if (n == 5) {
             capture_enemy_town();
-        } else if (n == 6) {
+        } else if (n == 9) {
             next_step();
+        } else if (n == 999) {
+            TownRepository.GoldCheat();
+            town();
+            return;
+        } else if (n == 888) {
+            TownRepository.ArmyCheat();
+            town();
+            return;
         }
         else{
             System.out.print("(!!!) Nezadali ste spravnu volbu - musite zadat cislo moznosti zo zoznamu. Vyberte moznost znova!\n");
@@ -152,12 +163,13 @@ public class Main {
     }
 
     public static boolean can_make_step() throws SQLException, ClassNotFoundException {
-        System.out.println(BuildingStepRepository.count(town) + " <- build | army -> " + ArmyStepRepository.count(town));
+        //System.out.println(BuildingStepRepository.count(town) + " <- build | army -> " + ArmyStepRepository.count(town));
         return BuildingStepRepository.count(town) == 0 && ArmyStepRepository.count(town) == 0;
     }
 
     public static void upgrade_building() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
+        printMainSeparator();
 
         if (!can_make_step()) {
             System.out.println(">> Uz si vykonal akciu, prejdi na dalsi krok");
@@ -172,10 +184,23 @@ public class Main {
         for (Building building : buildings) {
             System.out.println(building.getBuildingID() + " - BUDOVA: " + building.getName() + " LEVEL: " + building.getLevel() + " VYLEPSIT ZA: " + building.getPrice() + " ZLATA " + " ZA POCET KROKOV " + building.getSteps());
         }
+        System.out.println("9 - Navrat do menu");
 
-        System.out.print("Zadaj ID budovy na vylepsienie: ");
+        System.out.print(">> Zadajte ID budovy na vylepsienie, alebo stlacte '9' pre navrat do menu: ");
 
-        int building_id = reader.nextInt();
+        int building_id = -1;
+
+        reader = new Scanner(System.in);
+
+        try {
+            building_id = reader.nextInt();
+        }
+        catch (Exception e){
+            System.out.println("(!!!) Nezadali ste cislo - musite zadat cislo moznosti zo zoznamu. Vyberte moznost znova!");
+            upgrade_building();
+            return;
+        }
+
 
         Building selected_building;
 
@@ -197,22 +222,53 @@ public class Main {
 
                 break;
             }
+            if (building_id == 9){
+                town();
+                return;
+            }
+            else{
+                System.out.println("(!!!) Zadali ste zlu moznost! Vyberte spravnu moznost zo zoznamu.");
+                break;
+            }
         }
-        town();
+
+        upgrade_building();
     }
 
     public static void build_army() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
+        printMainSeparator();
         if (!can_make_step()) {
-            System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
+            System.out.println("Uz ste vykonali akciu, prejdite na dalsi krok");
             town();
         }
         // TODO: ukaz nakup vojakov
 
-        System.out.println("Pocet vojakov v meste: " + town.getArmy() + ". Pocet zlata v meste: " + TownRepository.getGoldAmount(town.getName()));
-        System.out.print("Zadaj pocet vojakov na nakup:");
+        System.out.println("Pocet vojakov v meste: " + town.getArmy() + " | Pocet zlata v meste: " + TownRepository.getGoldAmount(town.getName()));
+        System.out.print(">> Zadajte pocet vojakov na nakup (mozete kupit maximalne " + (TownRepository.getGoldAmount(town.getName())/5) + " vojakov): ");
+
         Scanner reader = new Scanner(System.in);
-        int number_of_soldiers = reader.nextInt();
+        int number_of_soldiers = -1;
+
+        try {
+            number_of_soldiers = reader.nextInt();
+
+            if(number_of_soldiers == 0){
+                System.out.println("(!!!) Neobjednali ste si ziadnych vojakov.");
+                town();
+                return;
+            }
+            if(number_of_soldiers < 0){
+                System.out.println("(!!!) Zadali ste zapornu hodnotu. Zadajte znovu, prosim:");
+                build_army();
+                return;
+            }
+        }
+        catch (Exception e){
+            System.out.println("(!!!) Nezadali ste cislo - musite zadat cislo (pocet vojakov). Zadajte znova!");
+            build_army();
+            return;
+        }
 
 
 
@@ -234,8 +290,9 @@ public class Main {
 
     public static void attackEnemy() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
+        printMainSeparator();
         if (!can_make_step()) {
-            System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
+            System.out.println("Uz ste vykonali akciu, prejdite na dalsi krok");
             town();
         }
         User selected_enemy = choosenEnemy("Utok");
@@ -247,13 +304,13 @@ public class Main {
             town();
         // TODO: pridaj na kolko krokov moze zautocit ?
         // TODO: najdi najkratsiu cestu
-        town();
     }
 
     public static void capture_enemy_town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
+        printMainSeparator();
         if (!can_make_step()) {
-            System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
+            System.out.println("Uz ste vykonali akciu, prejdite na dalsi krok");
             town();
         }
         else if (BuildingTownRelationRepository.getLevelOfMainBuilding(town.getTownID()) != 1) { //vratit na 5
@@ -339,29 +396,29 @@ public class Main {
                     //REMIZA
                     if (armyAfterBattle == 0){
                         TownRepository.updateArmy(defendTown,-TownRepository.getArmyAmount(defendTownName));
-                        System.out.println("Remizoval si boj s: " +defendTownName
-                                +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
+                        System.out.println("Remizovali ste boj s: " +defendTownName
+                                +"\nPocet vasich jednotiek: " +recordOfBattle.getArmy()
                                 +"\nPocet jednotiek supera: "+defendArmy
-                                +"\nVratilo sa ti: "+0+" jednotiek");
+                                +"\nVratilo sa vam: "+0+" jednotiek");
                     }
 
                     //VYHRA
                     else if(armyAfterBattle > 0){
                         TownRepository.updateArmy(town,(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy)));
                         TownRepository.setArmy(defendTown,0);
-                        System.out.println("Vyhral si boj s: " +defendTownName
-                                +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
+                        System.out.println("Vyhrali ste boj s: " +defendTownName
+                                +"\nPocet vasich jednotiek: " +recordOfBattle.getArmy()
                                 +"\nPocet jednotiek supera: "+defendArmy
-                                +"\nVratilo sa ti: "+(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy))+" jednotiek");
+                                +"\nVratilo sa vam: "+(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy))+" jednotiek");
                     }
 
                     //PREHRA
                     else{
                         TownRepository.setArmy(defendTown,-(int)Math.floor(armyAfterBattle/Math.sqrt((double)defendLevelOfArmy)));
-                        System.out.println("Prehral si boj s: " +defendTownName
-                                +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
+                        System.out.println("Prehrali ste boj s: " +defendTownName
+                                +"\nPocet vasich jednotiek: " +recordOfBattle.getArmy()
                                 +"\nPocet jednotiek supera: "+defendArmy
-                                +"\nVratilo sa ti: "+0+" jednotiek");
+                                +"\nVratilo sa vam: "+0+" jednotiek");
                     }
 
                     ArmyStepRepository.deleteIfDoneAttack(town);
@@ -442,9 +499,14 @@ public class Main {
         System.out.println("--------------------------------------");
     }
 
+    public static void printMainSeparator(){
+        System.out.println("======================================");
+    }
+
 
     public static void menu() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
+        printMainSeparator();
         System.out.println("Zoznam vasich miest:");
         printSeparator();
 
@@ -469,7 +531,7 @@ public class Main {
             correct_input = true;
         }
         catch (Exception e){
-            System.out.print("(!!!) Nezadali ste cislo - musite zadat cislo mesta zo zoznamu. Vyberte mesto znova!\n");
+            System.out.println("(!!!) Nezadali ste cislo - musite zadat cislo mesta zo zoznamu. Vyberte mesto znova!");
             menu();
         }
 
@@ -485,7 +547,7 @@ public class Main {
             }
         }
         if (!town_found){
-            System.out.print("(!!!) Cislo, ktore site zadali, nezodpoveda ziadnemu tvojmu mestu. Vyberte mesto znova");
+            System.out.println("(!!!) Cislo, ktore site zadali, nezodpoveda ziadnemu tvojmu mestu. Vyberte mesto znova!");
             menu();
 
         }else{
@@ -497,6 +559,7 @@ public class Main {
 
     public static User choosenEnemy(String option) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
+        printMainSeparator();
         Scanner reader = new Scanner(System.in);
         System.out.println("Protihraci - " + option);
         System.out.println("--------------------------------------");
@@ -507,9 +570,27 @@ public class Main {
             System.out.println(enemy.getUserID() + " - " + enemy.getName());
         }
 
-        System.out.print("Vyber protihrada podla ID: ");
+        System.out.print(">> Vyberte protihraca podla ID: ");
 
-        int selected_enemy = reader.nextInt();
+        int selected_enemy = -1;
+
+
+        reader = new Scanner(System.in);
+
+        try {
+            selected_enemy = reader.nextInt();
+
+            if (selected_enemy < 2 || selected_enemy > 8){
+                System.out.println("(!!!) Nezadali ste spravne cislo - musite zadat cislo protihraca zo zoznamu!");
+                town();
+                return null;
+            }
+        }
+        catch (Exception e){
+            System.out.println("(!!!) Nezadali ste cislo v spravnom formate - musite zadat cislo protihraca zo zoznamu!");
+            town();
+            return null;
+        }
 
         for (User enemy : enemies) {
             if (enemy.getUserID() == selected_enemy) {
@@ -521,17 +602,33 @@ public class Main {
 
     public static int choosenArmyAmount() throws IOException, InterruptedException, SQLException, ClassNotFoundException {
         clear();
+        printMainSeparator();
         Scanner reader = new Scanner(System.in);
         int townArmy = TownRepository.getArmyAmount(town.getName());
-        System.out.println("K dispozicii mas "+townArmy+" vojakov");
-        System.out.println("Zadaj pocet vojakov na utok: ");
-        int armyAmount = reader.nextInt();
+        System.out.println("K dispozicii mate " + townArmy + " vojakov");
+        System.out.println(">> Zadajte pocet vojakov na utok: ");
 
-        if ( townArmy < armyAmount){
-            System.out.println("Nemas tolko vojska... Zadaj pocet znovu");
-            choosenArmyAmount();
+
+        int armyAmount = -1;
+
+        reader = new Scanner(System.in);
+
+        try {
+            armyAmount = reader.nextInt();
+        }
+        catch (Exception e){
+            System.out.println("(!!!) Nezadali ste cislo v spravnom formate - musite zadat cislo pocet vojakov na boj!");
+            town();
         }
 
+        if (townArmy < armyAmount){
+            System.out.println(">> Nemate tolko vojska! Zadajte pocet znovu:");
+            town();
+        }
+        if (armyAmount < 0){
+            System.out.println("(!!!) Zadali ste zapornu hodnotu! Musite zadat spravny pocet vojakov na utok.");
+            town();
+        }
         return armyAmount;
 
     }
