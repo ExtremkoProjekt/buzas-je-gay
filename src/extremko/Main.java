@@ -13,8 +13,6 @@ import java.util.Scanner;
 
 import repositories.*;
 
-import javax.sound.midi.Soundbank;
-
 /**
  * @author MATEJ BUZAS
  */
@@ -72,6 +70,7 @@ public class Main {
                 map_path = "map1.txt";
                 UserRepository.add(username, map_path);
                 user = UserRepository.getUserByName(username);
+
 
             }
         }
@@ -152,7 +151,7 @@ public class Main {
         }
     }
 
-    public static boolean can_make_step() throws SQLException, ClassNotFoundException {
+    public static boolean canMakeStep() throws SQLException, ClassNotFoundException {
         System.out.println(BuildingStepRepository.count(town) + " <- build | army -> " + ArmyStepRepository.count(town));
         return BuildingStepRepository.count(town) == 0 && ArmyStepRepository.count(town) == 0;
     }
@@ -160,7 +159,7 @@ public class Main {
     public static void upgrade_building() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
 
-        if (!can_make_step()) {
+        if (!canMakeStep()) {
             System.out.println(">> Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
@@ -204,7 +203,7 @@ public class Main {
 
     public static void build_army() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        if (!can_make_step()) {
+        if (!canMakeStep()) {
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
@@ -235,7 +234,7 @@ public class Main {
 
     public static void attackEnemy() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        if (!can_make_step()) {
+        if (!canMakeStep()) {
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
@@ -253,7 +252,7 @@ public class Main {
 
     public static void capture_enemy_town() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-        if (!can_make_step()) {
+        if (!canMakeStep()) {
             System.out.println("Uz si vykonal akciu, prejdi na dalsi krok");
             town();
         }
@@ -316,6 +315,11 @@ public class Main {
 
             } else {
                 if(as.getRemainingSteps() > 0){
+                    if (as.getUserID()!=user.getUserID() && as.getOponentUserID()==user.getUserID()){
+                        String attackerTownName = TownRepository.getTownNameByUserID(as.getUserID());
+                        System.out.println("Prichadza na teba utok z dediny "+attackerTownName+" s "+as.getArmy()+" vojakmi!");
+                        System.out.println("Utok pride za "+as.getRemainingSteps()+"krokov");
+                    }
                     ArmyStepRepository.updateAttackSteps(town);
                 }
                 else{
@@ -340,29 +344,56 @@ public class Main {
                     //REMIZA
                     if (armyAfterBattle == 0){
                         TownRepository.updateArmy(defendTown,-TownRepository.getArmyAmount(defendTownName));
-                        System.out.println("Remizoval si boj s: " +defendTownName
-                                +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
-                                +"\nPocet jednotiek supera: "+defendArmy
-                                +"\nVratilo sa ti: "+0+" jednotiek");
+
+                        if (as.getUserID()!=user.getUserID() && as.getOponentUserID()==user.getUserID()){
+                            System.out.println("Zautocila na teba dedina: " +TownRepository.getTownNameByUserID(as.getUserID())+ " a remizoval si!"
+                                    +"\nPocet jednotiek supera: "+as.getArmy()
+                                    +"\nStratil si vsetky jednotky!");
+                        }
+                        if(as.getUserID()==user.getUserID()){
+                            System.out.println("Remizoval si boj s: " +defendTownName
+                                    +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
+                                    +"\nPocet jednotiek supera: "+defendArmy
+                                    +"\nVratilo sa ti: "+0+" jednotiek");
+                        }
+
                     }
 
                     //VYHRA
                     else if(armyAfterBattle > 0){
                         TownRepository.updateArmy(town,(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy)));
                         TownRepository.setArmy(defendTown,0);
-                        System.out.println("Vyhral si boj s: " +defendTownName
-                                +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
-                                +"\nPocet jednotiek supera: "+defendArmy
-                                +"\nVratilo sa ti: "+(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy))+" jednotiek");
+
+                        if (as.getUserID()!=user.getUserID() && as.getOponentUserID()==user.getUserID()){
+                            System.out.println("Zautocila na teba dedina: " +TownRepository.getTownNameByUserID(as.getUserID())+ " a prehral si!"
+                                    +"\nPocet jednotiek supera: "+as.getArmy()
+                                    +"\nStratil si vsetky jednotky!");
+                        }
+                        if(as.getUserID()==user.getUserID()){
+                            System.out.println("Vyhral si boj s: " +defendTownName
+                                    +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
+                                    +"\nPocet jednotiek supera: "+defendArmy
+                                    +"\nVratilo sa ti: "+(int)Math.floor(armyAfterBattle/Math.sqrt((double)attackLevelOfArmy))+" jednotiek");
+                        }
+
                     }
 
                     //PREHRA
                     else{
                         TownRepository.setArmy(defendTown,-(int)Math.floor(armyAfterBattle/Math.sqrt((double)defendLevelOfArmy)));
-                        System.out.println("Prehral si boj s: " +defendTownName
-                                +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
-                                +"\nPocet jednotiek supera: "+defendArmy
-                                +"\nVratilo sa ti: "+0+" jednotiek");
+
+                        if (as.getUserID()!=user.getUserID() && as.getOponentUserID()==user.getUserID()){
+                            System.out.println("Zautocila na teba dedina: " +TownRepository.getTownNameByUserID(as.getUserID())+ " a vyhral si!"
+                                    +"\nPocet jednotiek supera: "+as.getArmy()
+                                    +"\nZostalo ti "+TownRepository.getArmyAmount(defendTownName)+" jednotiek!");
+                        }
+                        if(as.getUserID()==user.getUserID()){
+                            System.out.println("Prehral si boj s: " +defendTownName
+                                    +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
+                                    +"\nPocet jednotiek supera: "+defendArmy
+                                    +"\nVratilo sa ti: "+0+" jednotiek");
+                        }
+
                     }
 
                     ArmyStepRepository.deleteIfDoneAttack(town);
@@ -383,7 +414,9 @@ public class Main {
             String enemy_town_name = TownRepository.getTownNameByUserID(enemy.getUserID());
             Town enemy_town = TownRepository.getTownByName(enemy_town_name);
             TownRepository.generateGold(enemy_town);
+            rnd = new Random();
             simulateAI(enemy.getUserID(), rnd.nextInt(3));
+            doStep(enemy_town);
         }
 
     }
@@ -395,7 +428,7 @@ public class Main {
             String townName = TownRepository.getTownNameByUserID(enemyID);
             Town town = TownRepository.getTownByName(townName);
             ArrayList<Building> buildings = BuildingRepository.getTonwBuildingsWithRelations(townName);
-
+            rnd = new Random();
             int buildingIDToUpgrade = rnd.nextInt(buildings.size());
             Building selected_building;
 
@@ -407,10 +440,7 @@ public class Main {
 
                         BuildingStepRepository.insert(selected_building, town);
                         TownRepository.subtractGold(town, selected_building.getPrice());
-                    } else {
-                        doStep(town);
                     }
-
                     break;
                 }
             }
@@ -420,19 +450,45 @@ public class Main {
             // postav vojsko
             String townName = TownRepository.getTownNameByUserID(enemyID);
             Town town = TownRepository.getTownByName(townName);
+            if(ArmyStepRepository.count(town)==0){
+                rnd = new Random();
+                int armyAmountToBuild = rnd.nextInt(50);
 
-            int armyAmountToBuild = rnd.nextInt(50);
+                if (TownRepository.canBuySoldiers(town, armyAmountToBuild)) {
+                    ArmyStepRepository.insert(town,0,0,armyAmountToBuild,0);
+                    TownRepository.subtractGold(town,armyAmountToBuild*5);
 
-            if (TownRepository.canBuySoldiers(town, armyAmountToBuild)) {
-                ArmyStepRepository.insert(town,0,0,armyAmountToBuild,0);
-                TownRepository.subtractGold(town,armyAmountToBuild*2);
-
-            } else {
-                doStep(town);
+                }
             }
+
         }
         else{
             // zautoc
+            String enemyTownName = TownRepository.getTownNameByUserID(enemyID);
+            Town enemyTown = TownRepository.getTownByName(enemyTownName);
+
+            if(ArmyStepRepository.count(enemyTown) == 0){
+                ArrayList<Town> allTowns = TownRepository.getTowns();
+                int defendTownId = enemyID;
+                while (defendTownId == enemyID){
+                    rnd = new Random();
+                    defendTownId = rnd.nextInt(allTowns.size())+1;
+                }
+
+                String defendTownName = TownRepository.getTownNameByUserID(defendTownId);
+                Town defendTown = TownRepository.getTownByName(defendTownName);
+
+                int armyAmount = TownRepository.getArmyAmount(enemyTownName);
+                if(armyAmount > 5){
+                    rnd = new Random();
+                    int attackArmyAmount = rnd.nextInt(armyAmount)+1;
+
+                    ArmyStepRepository.insert(enemyTown,defendTown.getUserID(),defendTownId,attackArmyAmount,5);
+                    //ArmyStepRepository.insert(enemyTown,1,1,attackArmyAmount,5);
+                    TownRepository.subtractArmy(enemyTown,attackArmyAmount);
+                }
+            }
+
 
 
         }
