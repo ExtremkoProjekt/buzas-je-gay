@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+import javafx.application.Application;
 import repositories.*;
 
 /**
@@ -27,8 +28,8 @@ public class Main {
 
     //java -jar nazov.jar
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, SQLException {
-        DatabaseHandleTables.dropTables();
-        DatabaseHandleTables.createTables();
+        //DatabaseHandleTables.dropTables();
+        //DatabaseHandleTables.createTables();
 
         reader = new Scanner(System.in);
 
@@ -318,30 +319,73 @@ public class Main {
 
     public static void captureEnemyTown() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
         clear();
-
         printMainSeparator();
         if (!canMakeStep()) {
             System.out.println("Uz ste vykonali akciu, prejdite na dalsi krok");
             town();
             return;
         }
-        else if (BuildingTownRelationRepository.getBuildingLevel(town,BuildingProgress.HLAVNA_BUDOVA)<5) { //vratit na 5
-            System.out.println("Este nemozete preberat cudzie mesta!");
+
+        User enemyUser = choosenEnemy("Preberanie");
+
+        String enemyTownName = TownRepository.getTownNameByUserID(enemyUser.getUserID());
+        Town enemyTown = TownRepository.getTownByName(enemyTownName);
+
+        if(captureTown(town,enemyTown)){
+            clear();
+            printMainSeparator();
+            System.out.println("Obsadili ste superove mesto a vyhrali ste hru!");
+            System.out.println("GAME OVER !!!!!!!!!!!!!!!!!!!!!!!!");
+            printSeparator();
+            System.exit(0);
+
+        }
+        else {
             town();
             return;
         }
-        else {
-            User selected_enemy = choosenEnemy("Preberanie");
-            if (selected_enemy != null){
-                int armyAmount = choosenArmyAmount();
+    }
+
+    public static boolean captureTown(Town attackerTown, Town defenderTown) throws SQLException, ClassNotFoundException, IOException, InterruptedException {
+
+        if (BuildingTownRelationRepository.getBuildingLevel(attackerTown,BuildingProgress.HLAVNA_BUDOVA)<2) { //vratit na 5
+            if(attackerTown.getUserID() == user.getUserID()){
+                System.out.println("Nemozno prebrat - Hlavna budova musi byt na urovni 5!");
+            }
+            else{
+                System.out.println("Chcelo vas prebrat mesto "+attackerTown.getName()+" avsak nema Hlavnu budovu na urovni 5!");
             }
 
+            return false;
+        }
+        else {
+            int attackerArmyAmount = TownRepository.getArmyAmount(attackerTown.getName());
+            int defenderLevelMainBuilding = BuildingTownRelationRepository.getBuildingLevel(defenderTown,BuildingProgress.HLAVNA_BUDOVA);
 
+            if (TownRepository.getArmyAmount(defenderTown.getName()) == 0 && attackerArmyAmount >= 10*defenderLevelMainBuilding){
+                return true;
+            }
+            else{
+                if(attackerTown.getUserID() == user.getUserID()){
+                    if(TownRepository.getArmyAmount(defenderTown.getName()) != 0){
+                        System.out.println("Nemozno prebrat - Mesto este ma nejake jednotky!");
+                    }
+                    if(attackerArmyAmount < 10*defenderLevelMainBuilding){
+                        System.out.println("Nemozno prebrat - Mate malo jednotiek!");
+                    }
+                }
+                else{
+                    if(TownRepository.getArmyAmount(defenderTown.getName()) != 0){
+                        System.out.println("Chcelo vas prebrat mesto "+attackerTown.getName()+" ale zatial mate jednotky na boj!");
+                    }
+                    if(attackerArmyAmount < 10*defenderLevelMainBuilding){
+                        System.out.println("Chcelo vas prebrat mesto "+attackerTown.getName()+" avsak nema dostatok jednotiek na utok!");
+                    }
+                }
+            }
         }
 
-
-
-        town();
+        return false;
     }
 
     public static void next_step() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
@@ -358,7 +402,7 @@ public class Main {
 
     }
 
-    public static void doStep(Town town) throws ClassNotFoundException, SQLException {
+    public static void doStep(Town town) throws ClassNotFoundException, SQLException, IOException, InterruptedException {
 
         if (BuildingStepRepository.count(town) > 0) {
             BuildingStep bs = BuildingStepRepository.selectBuildingStep(town);
@@ -443,6 +487,14 @@ public class Main {
                             System.out.println("Zautocila na teba dedina: " +TownRepository.getTownNameByUserID(as.getUserID())+ " a prehral si!"
                                     +"\nPocet jednotiek supera: "+as.getArmy()
                                     +"\nStratil si vsetky jednotky!");
+
+                            if(captureTown(town,defendTown)){
+                                clear();
+                                System.out.println("Prehrali ste!");
+                                System.out.println("Obsadila Vas dedina : "+town.getName());
+                                System.exit(0);
+                            }
+
                         }
                         if(as.getUserID()==user.getUserID()){
                             System.out.println("Vyhrali ste boj s: " +defendTownName
@@ -483,7 +535,7 @@ public class Main {
         }
     }
 
-    public static void makeAISteps() throws SQLException, ClassNotFoundException {
+    public static void makeAISteps() throws SQLException, ClassNotFoundException, IOException, InterruptedException {
 
         ArrayList<User> enemies = UserRepository.getEnemies(user.getName());
 

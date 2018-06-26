@@ -55,12 +55,15 @@ public class DummyTest {
         assertEquals(0, pg.towns.size());
     }
 
+
     @Test
     public void testLoadTown2() throws IOException, ClassNotFoundException, SQLException{
         Playground pg = new Playground();
         pg.parseTowns("a");
         assertEquals(1, pg.towns.size());
     }
+
+
 
 
 
@@ -108,23 +111,15 @@ public class DummyTest {
 
 
 
-
+    /*
     @Test
     public void testBuildingRel() throws IOException, ClassNotFoundException, SQLException{
 
-
-
-
         assertEquals(true,BuildingTownRelationRepository.isEmpty());
-
         BuildingTownRelationRepository.insert();
-
         assertEquals(false,BuildingTownRelationRepository.isEmpty());
-
-
-
     }
-
+    */
 
 
 
