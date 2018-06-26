@@ -58,17 +58,12 @@ public class DummyTest {
         assertEquals(0, pg.towns.size());
     }
 
-
     @Test
     public void testLoadTown2() throws IOException, ClassNotFoundException, SQLException{
         Playground pg = new Playground();
         pg.parseTowns("a");
         assertEquals(1, pg.towns.size());
     }
-
-
-
-
 
     @Test
     public void testAddUser() throws IOException, ClassNotFoundException, SQLException{
@@ -81,54 +76,21 @@ public class DummyTest {
         assertEquals(2,UserRepository.userCount());
     }
 
-
-
-
-
-
     @Test
     public void testAddTown() throws IOException, ClassNotFoundException, SQLException{
-
         User u = UserRepository.getUserByName("stefan");
         UserRepository.getEnemies("stefan");
         //System.out.println(u.getName()+" "+u.getUserID());
-
         TownRepository.add("mestoStefan",1);
-
-
         assertEquals("mestoStefan",TownRepository.getTownNameByUserID(1));
     }
 
     @Test
     public void testBuildingsCount() throws IOException, ClassNotFoundException, SQLException{
-
-
         assertEquals(3,BuildingRepository.buildingCount());
-
         BuildingRepository.add("Kasarne");
-
         assertEquals(4,BuildingRepository.buildingCount());
-
-        //DatabaseHandleTables.dropTables();
     }
-
-    @Test
-    public void testBuildingProgress() throws IOException, ClassNotFoundException, SQLException{
-        BuildingProgress bp = new BuildingProgress(1, 1, 10, 5, 1);
-        assertEquals("KASAREN",bp.getTypeOfBuidling(bp.getId()));
-    }
-
-
-
-    /*
-    @Test
-    public void testBuildingRel() throws IOException, ClassNotFoundException, SQLException{
-
-        assertEquals(true,BuildingTownRelationRepository.isEmpty());
-        BuildingTownRelationRepository.insert();
-        assertEquals(false,BuildingTownRelationRepository.isEmpty());
-    }
-    */
 
     @Test
     public void testMakeStepsTrue() throws SQLException, ClassNotFoundException {
@@ -161,24 +123,32 @@ public class DummyTest {
         String map_path = "map1.txt";
         String username = "matej";
         UserRepository.add(username, map_path);
-
         User user = UserRepository.getUserByName(username);
-
         BootstrapDB.initDatabase();
-
         assertEquals(true,UserRepository.exists(username));
-
     }
 
+    @Test
+    public void testBuildingProgress() throws IOException, ClassNotFoundException, SQLException{
+        BuildingProgress bp = new BuildingProgress(1, 1, 10, 5, 1);
+        assertEquals("KASAREN",bp.getTypeOfBuidling(bp.getId()));
+    }
 
+    @Test
+    public void testBuildingProgress2() throws IOException, ClassNotFoundException, SQLException{
+        BuildingProgress bp = new BuildingProgress(2, 1, 20, 10, 2);
+        assertEquals("ZLATA_BANA",bp.getTypeOfBuidling(bp.getId()));
+    }
 
+    @Test
+    public void testBuildingProgress3() throws IOException, ClassNotFoundException, SQLException{
+        BuildingProgress bp = new BuildingProgress(3, 1, 25, 15, 4);
+        assertEquals("HLAVNA_BUDOVA",bp.getTypeOfBuidling(bp.getId()));
+    }
 
-
-
-
-
-
-
-
-
+    @Test
+    public void testBuildingProgress4() throws IOException, ClassNotFoundException, SQLException{
+        BuildingProgress bp = new BuildingProgress(0, 1, 25, 15, 4);
+        assertEquals("NULL",bp.getTypeOfBuidling(bp.getId()));
+    }
 }
