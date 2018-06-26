@@ -334,8 +334,6 @@ public class Main {
 
                     //REMIZA
                     if (armyAfterBattle == 0){
-
-                        //TownRepository.updateArmy(town,-recordOfBattle.getArmy());
                         TownRepository.updateArmy(defendTown,-TownRepository.getArmyAmount(defendTownName));
                         System.out.println("Remizoval si boj s: " +defendTownName
                                 +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
@@ -355,7 +353,6 @@ public class Main {
 
                     //PREHRA
                     else{
-                        //TownRepository.updateArmy(town,-recordOfBattle.getArmy());
                         TownRepository.updateArmy(defendTown,-(int)Math.floor(armyAfterBattle/Math.sqrt((double)defendLevelOfArmy)));
                         System.out.println("Prehral si boj s: " +defendTownName
                                 +"\nPocet tvojich jednotiek: " +recordOfBattle.getArmy()
